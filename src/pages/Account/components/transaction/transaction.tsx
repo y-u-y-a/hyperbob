@@ -9,6 +9,7 @@ import React from 'react';
 import { EthersTransactionRequest } from '../../../Background/services/provider-bridge';
 import { TransactionComponentProps } from '../types';
 
+// NOTE: ダミーコンポーネント本体
 const Transaction = ({
   transaction,
   onComplete,
@@ -40,11 +41,16 @@ const Transaction = ({
           <Button
             size="large"
             variant="contained"
-            onClick={() => onComplete(transaction, undefined)}
+            onClick={() => {
+              // TODO: 新しいトランザクションを作成&storeにセットする
+              // TODO: ここでstoreにセットする方法を解明する
+              onComplete(transaction, undefined);
+            }}
           >
             Continue
           </Button>
         </Stack>
+        <div>{JSON.stringify(transaction)}</div>
       </CardActions>
     </>
   );

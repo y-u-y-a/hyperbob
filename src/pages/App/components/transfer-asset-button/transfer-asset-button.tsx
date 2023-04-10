@@ -11,7 +11,8 @@ const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
   const sendMoney = useCallback(async () => {
     console.log('did we come here?', window.ethereum);
     if (window.ethereum) {
-      const accounts = await window.ethereum.request({
+      // ポップアップ起動のため'eth_requestAccounts'のメッセージイベントでポップアップ起動している
+      await window.ethereum.request({
         method: 'eth_requestAccounts',
       });
       const txHash = await window.ethereum.request({
