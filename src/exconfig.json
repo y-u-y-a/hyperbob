@@ -1,0 +1,19 @@
+{
+  "enablePasswordEncryption": false,
+  "showTransactionConfirmationScreen": true,
+  "factory_address": "0x09c58cf6be8E25560d479bd52B4417d15bCA2845",
+  "network": {
+    "chainID": "5",
+    "family": "EVM",
+    "name": "Goerli",
+    "provider": "https://eth-goerli.g.alchemy.com/v2/Lu6IYOJxPDo0mjzjHz_iqMJbeYDWIqFO",
+    "entryPointAddress": "0x0576a174D229E3cFA37253523E645A78A0C91B57",
+    "bundler": "https://node.stackup.sh/v1/rpc/b1918841db604a847af94989bc7ddc3ab5cca9947ad2f0b88e145d7b83cb2c8b",
+    "baseAsset": {
+      "symbol": "ETH",
+      "name": "ETH",
+      "decimals": 18,
+      "image": "https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/6ed5f/eth-diamond-black.webp"
+    }
+  }
+}
