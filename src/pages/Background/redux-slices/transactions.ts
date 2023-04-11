@@ -141,6 +141,9 @@ const transactionsSlice = createSlice<
   },
 });
 
+/**
+ * NOTE: stateの保存・更新処理
+ */
 export const {
   sendTransactionRequest,
   sendTransactionsRequest,

@@ -15,6 +15,7 @@ const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
       await window.ethereum.request({
         method: 'eth_requestAccounts',
       });
+      // 初期Transactionを作成
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
         params: [
