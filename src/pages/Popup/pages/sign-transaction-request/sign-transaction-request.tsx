@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import React, { useCallback, useState } from 'react';
 import {
   AccountImplementations,
