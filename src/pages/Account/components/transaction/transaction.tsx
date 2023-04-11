@@ -54,23 +54,19 @@ const Transaction = ({
             size="large"
             variant="contained"
             onClick={async () => {
-              try {
-                // TODO: 新しいトランザクションを作成
-                const dummy = Array.prototype.slice.call({ 0: 'a', length: 1 });
-                transaction.data = dummy;
-                await backgroundDispatch(
-                  // transactionRequestのstateを変更する
-                  sendTransactionRequest({
-                    transactionRequest: transaction,
-                    origin: 'https://yahoo.co.jp',
-                  })
-                );
-                onComplete(transaction, undefined);
-                console.log({ transaction });
-                navigate('/complete');
-              } catch (error) {
-                console.log({ error });
-              }
+              // TODO: 新しいトランザクションを作成
+              const dummy = Array.prototype.slice.call({ 0: 'a', length: 1 });
+              transaction.data = dummy;
+              await backgroundDispatch(
+                // transactionRequestのstateを変更する
+                sendTransactionRequest({
+                  transactionRequest: transaction,
+                  origin: 'https://yahoo.co.jp',
+                })
+              );
+              onComplete(transaction, undefined);
+              console.log({ transaction });
+              // navigate('/complete');
             }}
           >
             Continue
