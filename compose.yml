@@ -11,16 +11,7 @@ x-node: &x-node
 
 x-bundler: &x-bundler
   image: figboy9/stackup-bundler:0.4.5-no-tracecall
-  environment:
-    # Address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266" (10000 ETH)
-    ERC4337_BUNDLER_PRIVATE_KEY: ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-    ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS: 0x0576a174D229E3cFA37253523E645A78A0C91B57
   command: start --mode private
-  ports:
-    - 4337:4337
-  depends_on:
-    node:
-      condition: service_healthy
 
 services:
   goerli:
@@ -41,6 +32,9 @@ services:
     <<: *x-bundler
     environment:
       ERC4337_BUNDLER_ETH_CLIENT_URL: http://goerli:8545
+      # Address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266" (10000 ETH)
+      ERC4337_BUNDLER_PRIVATE_KEY: ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS: 0x0576a174D229E3cFA37253523E645A78A0C91B57
     ports:
       - 4337:4337
     depends_on:
@@ -51,6 +45,9 @@ services:
     <<: *x-bundler
     environment:
       ERC4337_BUNDLER_ETH_CLIENT_URL: http://sepolia:8545
+      # Address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266" (10000 ETH)
+      ERC4337_BUNDLER_PRIVATE_KEY: ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS: 0x0576a174D229E3cFA37253523E645A78A0C91B57
     ports:
       - 5337:4337
     depends_on:
