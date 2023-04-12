@@ -5,10 +5,9 @@ import '@typechain/hardhat';
 import { HardhatUserConfig } from 'hardhat/types';
 import * as fs from 'fs';
 import '@nomiclabs/hardhat-etherscan';
+import './tasks/sendEth';
 
-const mnemonicFileName =
-  process.env.MNEMONIC_FILE ??
-  `${process.env.HOME}/.secret/testnet-mnemonic.txt`;
+const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`;
 let mnemonic = 'test '.repeat(11) + 'junk';
 if (fs.existsSync(mnemonicFileName)) {
   mnemonic = fs.readFileSync(mnemonicFileName, 'ascii');
@@ -33,7 +32,7 @@ function getNetwork(name: string): {
 }
 
 const config: HardhatUserConfig = {
-  defaultNetwork: 'hardhat',
+  defaultNetwork: 'localhost',
   solidity: {
     compilers: [{ version: '0.8.12', settings: {} }, { version: '0.5.0' }],
   },

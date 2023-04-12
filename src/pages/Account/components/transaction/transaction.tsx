@@ -4,6 +4,7 @@ import React, { FC, useState } from 'react';
 import { TransactionComponentProps as Props } from '../types';
 import { useBackgroundDispatch } from '../../../App/hooks';
 import { sendTransactionRequest } from '../../../Background/redux-slices/transactions';
+import { ethers } from 'ethers';
 
 // NOTE: This is Costomize component
 const Transaction: FC<Props> = ({ transaction, onComplete }) => {
@@ -15,16 +16,18 @@ const Transaction: FC<Props> = ({ transaction, onComplete }) => {
   //
   const changeTransaction = async () => {
     // TODO: 新しいトランザクションを作成をすれば確認画面へ遷移する
-    const newtransactionData = Array.prototype.slice.call({ 0: 'a', length: 1 });
-    transaction.data = newtransactionData;
+    transaction.to = tokenAddress;
+    transaction.value = ethers.utils.parseEther(val);
+
     await backgroundDispatch(
       // transactionRequestのstateを変更する
       sendTransactionRequest({
         transactionRequest: transaction,
-        origin: 'https://yahoo.co.jp',
+        origin: '',
       })
     );
     onComplete(transaction, undefined);
+    console.log({ transaction });
   };
 
   return (
