@@ -1,30 +1,35 @@
 import { Box, Button, Input, Stack } from '@mui/material';
-import React, { useState } from 'react';
-import { TransactionComponentProps } from '../types';
-import { useBackgroundDispatch } from '../../../App/hooks';
-import {
-  sendTransactionRequest,
-  setModifyTransactionsRequest,
-} from '../../../Background/redux-slices/transactions';
-import { useNavigate } from 'react-router-dom';
+import React, { FC, useState } from 'react';
 
-// NOTE: ダミーコンポーネント本体
-const Transaction = ({
-  transaction,
-  onComplete,
-  onReject,
-}: TransactionComponentProps) => {
+import { TransactionComponentProps as Props } from '../types';
+import { useBackgroundDispatch } from '../../../App/hooks';
+import { sendTransactionRequest } from '../../../Background/redux-slices/transactions';
+
+// NOTE: This is Costomize component
+const Transaction: FC<Props> = ({ transaction, onComplete }) => {
   const backgroundDispatch = useBackgroundDispatch();
-  const navigate = useNavigate();
   //
   const [gkAddress, setGkAddress] = useState('');
   const [tokenAddress, setTokenAddress] = useState('');
   const [val, setVal] = useState('');
+  //
+  const changeTransaction = async () => {
+    // TODO: 新しいトランザクションを作成をすれば確認画面へ遷移する
+    const newtransactionData = Array.prototype.slice.call({ 0: 'a', length: 1 });
+    transaction.data = newtransactionData;
+    await backgroundDispatch(
+      // transactionRequestのstateを変更する
+      sendTransactionRequest({
+        transactionRequest: transaction,
+        origin: 'https://yahoo.co.jp',
+      })
+    );
+    onComplete(transaction, undefined);
+  };
+
   return (
     <Box display="flex" flexDirection="column" justifyContent="center">
-      <h3 style={{ margin: '20px auto', fontSize: '20px', fontWeight: 'bold' }}>
-        Enter a destination address
-      </h3>
+      <h3 style={{ margin: '20px auto', fontSize: '20px', fontWeight: 'bold' }}>Enter a destination address</h3>
       <Box marginBottom="20px">
         <Stack spacing={2} style={{ width: '80%', margin: '0 auto 20px' }}>
           <Input
@@ -50,25 +55,7 @@ const Transaction = ({
           />
         </Stack>
         <Box display="flex" justifyContent="center">
-          <Button
-            size="large"
-            variant="contained"
-            onClick={async () => {
-              // TODO: 新しいトランザクションを作成
-              const dummy = Array.prototype.slice.call({ 0: 'a', length: 1 });
-              transaction.data = dummy;
-              await backgroundDispatch(
-                // transactionRequestのstateを変更する
-                sendTransactionRequest({
-                  transactionRequest: transaction,
-                  origin: 'https://yahoo.co.jp',
-                })
-              );
-              onComplete(transaction, undefined);
-              console.log({ transaction });
-              // navigate('/complete');
-            }}
-          >
+          <Button size="large" variant="contained" onClick={changeTransaction}>
             Continue
           </Button>
         </Box>
