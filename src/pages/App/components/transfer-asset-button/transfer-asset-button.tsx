@@ -1,20 +1,14 @@
 import React, { useCallback } from 'react';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import StoreIcon from '@mui/icons-material/Store';
-import { Avatar, Stack, Tooltip, Typography, useTheme } from '@mui/material';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import { Button, Typography } from '@mui/material';
 import { ethers } from 'ethers';
 
 const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
-  const theme = useTheme();
-
-  const sendMoney = useCallback(async () => {
+  const sendToBob = useCallback(async () => {
     console.log('did we come here?', window.ethereum);
     if (window.ethereum) {
       // ポップアップ起動のため'eth_requestAccounts'のメッセージイベントでポップアップ起動している
-      await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
       // 初期Transactionを作成
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
@@ -31,48 +25,12 @@ const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
   }, [activeAccount]);
 
   return (
-    <Stack direction={'row'} spacing={4}>
-      <Tooltip title="Coming soon">
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          spacing={'4px'}
-          sx={{ cursor: 'not-allowed', opacity: 0.5 }}
-        >
-          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-            <StoreIcon />
-          </Avatar>
-          <Typography variant="button">Buy</Typography>
-        </Stack>
-      </Tooltip>
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        spacing={'4px'}
-        sx={{ cursor: 'pointer' }}
-      >
-        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-          <SendRoundedIcon
-            onClick={sendMoney}
-            sx={{ transform: 'rotate(-45deg)', ml: '4px', mb: '6px' }}
-          />
-        </Avatar>
-        <Typography variant="button">Send</Typography>
-      </Stack>
-      <Tooltip title="Coming soon">
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          spacing={'4px'}
-          sx={{ cursor: 'not-allowed', opacity: 0.5 }}
-        >
-          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-            <SwapHorizIcon />
-          </Avatar>
-          <Typography variant="button">Swap</Typography>
-        </Stack>
-      </Tooltip>
-    </Stack>
+    <Button size="large" variant="contained" onClick={sendToBob}>
+      <Typography mr={1} p={1} variant="h6" color="white">
+        Send to bob
+      </Typography>
+      <SendRoundedIcon sx={{ color: 'white' }} />
+    </Button>
   );
 };
 
