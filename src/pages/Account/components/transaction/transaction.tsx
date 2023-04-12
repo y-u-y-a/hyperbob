@@ -15,19 +15,24 @@ const Transaction: FC<Props> = ({ transaction, onComplete }) => {
   const [val, setVal] = useState('');
   //
   const changeTransaction = async () => {
-    // TODO: 新しいトランザクションを作成をすれば確認画面へ遷移する
-    transaction.to = tokenAddress;
-    transaction.value = ethers.utils.parseEther(val).toString();
+    try {
+      // TODO: 新しいトランザクションを作成をすれば確認画面へ遷移する
+      transaction.to = tokenAddress;
+      transaction.value = ethers.utils.parseEther(val).toString();
 
-    await backgroundDispatch(
-      // transactionRequestのstateを変更する
-      sendTransactionRequest({
-        transactionRequest: transaction,
-        origin: '',
-      })
-    );
-    onComplete(transaction, undefined);
-    console.log({ transaction });
+      await backgroundDispatch(
+        // transactionRequestのstateを変更する
+        sendTransactionRequest({
+          transactionRequest: transaction,
+          origin: '',
+        })
+      );
+      onComplete(transaction, undefined);
+      console.log({ transaction });
+    } catch (error) {
+      console.log({ error });
+      alert('Please your input.');
+    }
   };
 
   return (
