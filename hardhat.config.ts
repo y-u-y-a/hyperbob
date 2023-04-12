@@ -2,10 +2,11 @@
 import '@nomiclabs/hardhat-ethers';
 import 'hardhat-deploy';
 import '@typechain/hardhat';
-import { HardhatUserConfig } from 'hardhat/types';
+import { HardhatUserConfig, NetworksUserConfig } from 'hardhat/types';
 import * as fs from 'fs';
 import '@nomiclabs/hardhat-etherscan';
 import './tasks/sendEth';
+import { networks } from './src/exconfig.json';
 
 const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`;
 let mnemonic = 'test '.repeat(11) + 'junk';
@@ -31,8 +32,14 @@ function getNetwork(name: string): {
   // return getNetwork1(`wss://${name}.infura.io/ws/v3/${process.env.INFURA_ID}`)
 }
 
+const a = networks.map((n) => {
+  return 'a';
+});
+
+// const  HttpNetworkUserConfig
+
 const config: HardhatUserConfig = {
-  defaultNetwork: 'localhost',
+  defaultNetwork: 'localGoerli',
   solidity: {
     compilers: [{ version: '0.8.12', settings: {} }, { version: '0.5.0' }],
   },
@@ -40,7 +47,13 @@ const config: HardhatUserConfig = {
     outDir: 'src/pages/Account/account-api/typechain-types',
   },
   networks: {
-    goerli: getNetwork('goerli'),
+    // goerli: getNetwork('goerli'),
+    localGoerli: {
+      url: 'http://localhost:8545',
+    },
+    localSepolia: {
+      url: 'http://localhost:8546',
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
