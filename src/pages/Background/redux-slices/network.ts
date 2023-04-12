@@ -13,19 +13,26 @@ export type NetworkState = {
   supportedNetworks: Array<EVMNetwork>;
 };
 
-const Networks: EVMNetwork[] = Config.networks;
+const Networks: EVMNetwork[] = JSON.parse(JSON.stringify(Config.networks));
 
 export const initialState: NetworkState = {
   activeNetwork: Networks[0],
   supportedNetworks: Networks,
 };
 
-type NetworkReducers = {};
+type NetworkReducers = {
+  setActiveNetwork: (state: NetworkState, { payload }: { payload: EVMNetwork }) => void;
+};
 
 const networkSlice = createSlice<NetworkState, NetworkReducers, 'network'>({
   name: 'network',
   initialState,
-  reducers: {},
+  reducers: {
+    setActiveNetwork: (state, { payload }) => {
+      state.activeNetwork = payload;
+    },
+  },
 });
 
+export const { setActiveNetwork } = networkSlice.actions;
 export default networkSlice.reducer;
