@@ -1825,6 +1825,82 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@hyperlane-xyz/celo-ethers-provider@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/celo-ethers-provider/-/celo-ethers-provider-0.1.1.tgz#596dbf180cd476781e8d3bdd9ba595e7438563f0"
+  integrity sha512-Kl+qV4J+5PGwFN+dCQ+bu42y5FXkvQKDuZVLRKehk/L6/Otj+UO0PL+U532Y3/RaWH0xtpsImONfL7+edzOFtw==
+
+"@hyperlane-xyz/core@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/core/-/core-1.1.0.tgz#03a70a3a31e965d77ecb50208f55cc935d58f2d1"
+  integrity sha512-4PF+ptV1EUPLQ61NVMUXyotua8r0VLzaSyMPeHZZbs8Dsp/n4kUg/SoFjLQ81S9ZGjWnn3eFZ8YH+0us2YX2uw==
+  dependencies:
+    "@hyperlane-xyz/utils" "1.1.0"
+    "@openzeppelin/contracts" "^4.8.0"
+    "@openzeppelin/contracts-upgradeable" "^4.8.0"
+
+"@hyperlane-xyz/core@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/core/-/core-1.3.0.tgz#8603ad919926e25e62e53f310d82bd010dd148c9"
+  integrity sha512-1YaTbucXshoijwODk+Iq6cC79iDfexsWd9/PqJZG2ogFfqoU5rO0+atK+40y5OEhLrTwCqUfRAV8K/Q+c3bYbQ==
+  dependencies:
+    "@hyperlane-xyz/utils" "1.3.0"
+    "@openzeppelin/contracts" "^4.8.0"
+    "@openzeppelin/contracts-upgradeable" "^4.8.0"
+
+"@hyperlane-xyz/hyperlane-token@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/hyperlane-token/-/hyperlane-token-1.1.0.tgz#c8c7665f2422241653a9e90c3c51a7cba193d496"
+  integrity sha512-ZFBBXjrfrL3sldBhXYHh9bgtvKEf/oQY8cIN0DrPYSdlUFWDMNO6YfXUAoPxNS9ZEJMqAmpYYWdbLA7rHyIoeQ==
+  dependencies:
+    "@hyperlane-xyz/core" "1.1.0"
+    "@hyperlane-xyz/sdk" "1.1.0"
+    "@hyperlane-xyz/utils" "1.1.0"
+    "@openzeppelin/contracts-upgradeable" "^4.8.0"
+    ethers "^5.7.2"
+
+"@hyperlane-xyz/sdk@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/sdk/-/sdk-1.1.0.tgz#cccd4f85b9c549dc6e43107d5dd5a50359a8f41a"
+  integrity sha512-5h/ByU299paZRT66VxHiCkMjdDKYgeQYRZpuAuLa3bwtfCk6QdJVxNMiMGzArptKX4jNjEKgaNKkS3WTnr4yLg==
+  dependencies:
+    "@hyperlane-xyz/celo-ethers-provider" "^0.1.1"
+    "@hyperlane-xyz/core" "1.1.0"
+    "@hyperlane-xyz/utils" "1.1.0"
+    "@wagmi/chains" "^0.1.3"
+    coingecko-api "^1.0.10"
+    cross-fetch "^3.1.5"
+    debug "^4.3.4"
+    ethers "^5.7.2"
+
+"@hyperlane-xyz/sdk@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/sdk/-/sdk-1.3.0.tgz#3b8fd260ebb6954cb51576b840d837157576ac6b"
+  integrity sha512-pe/is3KcND01NwvDafS5AsraJGV7cK35agwbZbAXBDWf6ANU8sRXVlvQkGnOQM+lU8kyEGXCSr1TXl8YF7SG/A==
+  dependencies:
+    "@hyperlane-xyz/core" "1.3.0"
+    "@hyperlane-xyz/utils" "1.3.0"
+    "@wagmi/chains" "^0.2.6"
+    coingecko-api "^1.0.10"
+    cross-fetch "^3.1.5"
+    debug "^4.3.4"
+    ethers "^5.7.2"
+    zod "^3.21.2"
+
+"@hyperlane-xyz/utils@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/utils/-/utils-1.1.0.tgz#2726ce7ba20bf90ea74757bbde569840be85e962"
+  integrity sha512-DxJRB+OdgyhbCgapCVHbPv2CYbV+ZoCNywPTVcrC96BCMiI62pU6gRY7Cz/Tmi7Mc5yRrsl4h7axRTQuRqUhtA==
+  dependencies:
+    ethers "^5.7.2"
+
+"@hyperlane-xyz/utils@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@hyperlane-xyz/utils/-/utils-1.3.0.tgz#e7ba10b4295d10bc57feda39bb74ca879f2af6f7"
+  integrity sha512-jwEoJIiAZ3ZG5wlgKsiujjp+0RbvSy524iaZePjF/mqYjTTv/bl8uC5T1MW+5iHz+mgh3gXtRX2PT8yoyhuymQ==
+  dependencies:
+    ethers "^5.7.2"
+
 "@josephg/resolvable@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@josephg/resolvable/-/resolvable-1.0.1.tgz#69bc4db754d79e1a2f17a650d3466e038d94a5eb"
@@ -2459,10 +2535,20 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@openzeppelin/contracts-upgradeable@^4.8.0":
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.8.2.tgz#edef522bdbc46d478481391553bababdd2199e27"
+  integrity sha512-zIggnBwemUmmt9IS73qxi+tumALxCY4QEs3zLCII78k0Gfse2hAOdAkuAeLUzvWUpneMUfFE5sGHzEUSTvn4Ag==
+
 "@openzeppelin/contracts@^4.7.3":
   version "4.8.1"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.1.tgz#709cfc4bbb3ca9f4460d60101f15dac6b7a2d5e4"
   integrity sha512-xQ6eUZl+RDyb/FiZe1h+U7qr/f4p/SrTSQcTPH2bjur3C5DbuW/zFgCU/b1P/xcIaEqJep+9ju4xDRi3rmChdQ==
+
+"@openzeppelin/contracts@^4.8.0", "@openzeppelin/contracts@^4.8.2":
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.2.tgz#d815ade0027b50beb9bcca67143c6bcc3e3923d6"
+  integrity sha512-kEUOgPQszC0fSYWpbh2kT94ltOJwj1qfT2DWo+zVttmGmf97JZ99LspePNaeeaLhCImaHVeBbjaQFZQn7+Zc5g==
 
 "@peculiar/asn1-ecc@^2.3.4":
   version "2.3.4"
@@ -4036,6 +4122,16 @@
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.2.9.tgz#3dba5fbeb3a2a5c9253bbedce3ede8c84bd809cb"
   integrity sha512-z0Nv7Cto+t/47NtC8td7khMSWX0zKVCnm8gkgrRs9PHvN+4W7XZfUVQYfhIfkbelT/ONN9V1OA+ho122gmRr3Q==
+
+"@wagmi/chains@^0.1.3":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.1.14.tgz#2740762f2719df2c69c63ab30b67fdf4bef70305"
+  integrity sha512-hSzb6Ni/PejVzliKkc5T3ehzRJxr5k4fZMGYuouqwArWQ8z7R4jrIlm2j2nNOD7Epz6ZucdiVluU1YH0d/EEyw==
+
+"@wagmi/chains@^0.2.6":
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.2.18.tgz#e72ac9a26ec5e66345343705dcd92cb181bcdf7b"
+  integrity sha512-TqLzrwvUyjjyA24kjPvrhYflvZ8TU7hena+Hl0fH2SW0ENnSB6cd3Uwlk6blv/lfSN0w8mWaRQOchtugKXkHYw==
 
 "@wagmi/connectors@0.2.7":
   version "0.2.7"
@@ -6055,6 +6151,11 @@ codemirror@^5.65.4:
   version "5.65.12"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.65.12.tgz#294fdf097d10ac5b56a9e011a91eff252afc73ae"
   integrity sha512-z2jlHBocElRnPYysN2HAuhXbO3DNB0bcSKmNz3hcWR2Js2Dkhc1bEOxG93Z3DeUrnm+qx56XOY5wQmbP5KY0sw==
+
+coingecko-api@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/coingecko-api/-/coingecko-api-1.0.10.tgz#ac8694d5999f00727fe55f0078ce2917603076b2"
+  integrity sha512-7YLLC85+daxAw5QlBWoHVBVpJRwoPr4HtwanCr8V/WRjoyHTa1Lb9DQAvv4MDJZHiz4no6HGnDQnddtjV35oRA==
 
 color-convert@^1.9.0, color-convert@^1.9.3:
   version "1.9.3"
@@ -15262,6 +15363,11 @@ zksync-web3@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/zksync-web3/-/zksync-web3-0.8.1.tgz#db289d8f6caf61f4d5ddc471fa3448d93208dc14"
   integrity sha512-1A4aHPQ3MyuGjpv5X/8pVEN+MdZqMjfVmiweQSRjOlklXYu65wT9BGEOtCmMs5d3gIvLp4ssfTeuR5OCKOD2kw==
+
+zod@^3.21.2:
+  version "3.21.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.21.4.tgz#10882231d992519f0a10b5dd58a38c9dabbb64db"
+  integrity sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==
 
 zustand@^4.3.1:
   version "4.3.3"
