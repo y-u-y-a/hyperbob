@@ -27,6 +27,7 @@ const config: HardhatUserConfig = {
   },
   typechain: {
     outDir: 'src/pages/Account/account-api/typechain-types',
+    target: 'ethers-v5',
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
