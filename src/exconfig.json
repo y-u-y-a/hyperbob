@@ -29,6 +29,20 @@
         "decimals": 18,
         "image": "https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/6ed5f/eth-diamond-black.webp"
       }
+    },
+    {
+      "chainID": "1",
+      "family": "EVM",
+      "name": "Mainnet",
+      "provider": "https://eth-mainnet.g.alchemy.com/v2/to4seiW9TYwgYhFtl7KVQQm45JKw7HiU",
+      "entryPointAddress": "0x0576a174D229E3cFA37253523E645A78A0C91B57",
+      "bundler": "http://localhost:5337",
+      "baseAsset": {
+        "symbol": "ETH",
+        "name": "ETH",
+        "decimals": 18,
+        "image": "https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/6ed5f/eth-diamond-black.webp"
+      }
     }
   ]
 }
