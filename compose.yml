@@ -26,6 +26,12 @@ services:
     ports:
       - 9545:8545
 
+  mainnet:
+    <<: *x-node
+    command: --host=0.0.0.0 -f=https://eth-mainnet.g.alchemy.com/v2/to4seiW9TYwgYhFtl7KVQQm45JKw7HiU
+    ports:
+      - 10545:8545
+
   goerli-bundler:
     <<: *x-bundler
     environment:
@@ -50,4 +56,17 @@ services:
       - 5337:4337
     depends_on:
       sepolia:
+        condition: service_healthy
+
+  mainnet-bundler:
+    <<: *x-bundler
+    environment:
+      ERC4337_BUNDLER_ETH_CLIENT_URL: http://sepolia:10545
+      # Address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266" (10000 ETH)
+      ERC4337_BUNDLER_PRIVATE_KEY: ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS: 0x0576a174D229E3cFA37253523E645A78A0C91B57
+    ports:
+      - 6337:4337
+    depends_on:
+      mainnet:
         condition: service_healthy

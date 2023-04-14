@@ -39,10 +39,5 @@ abstract contract ERC777 is IERC777Sender, IERC777Recipient {
         uint256 amount,
         bytes calldata _userData,
         bytes calldata operatorData
-    ) external {
-        require(from == address(this), "INVALID_SENDER");
-        _executePrivateTransfer(_userData);
-    }
-
-    function _executePrivateTransfer(bytes memory _data) internal virtual {}
+    ) external virtual {}
 }
