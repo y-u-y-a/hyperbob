@@ -26,18 +26,9 @@ contract AccountFactory {
      */
     function createAccount(
         address owner,
-        address _zkBOBPool,
-        address _hypBOBCollateral,
-        address _hypBOB,
         uint256 salt
     ) public returns (Account ret) {
-        address addr = getAddress(
-            owner,
-            _zkBOBPool,
-            _hypBOBCollateral,
-            _hypBOB,
-            salt
-        );
+        address addr = getAddress(owner, salt);
         uint codeSize = addr.code.length;
         if (codeSize > 0) {
             return Account(payable(addr));
@@ -46,10 +37,7 @@ contract AccountFactory {
             payable(
                 new ERC1967Proxy{salt: bytes32(salt)}(
                     address(accountImplementation),
-                    abi.encodeCall(
-                        Account.initialize,
-                        (owner, _zkBOBPool, _hypBOBCollateral, _hypBOB)
-                    )
+                    abi.encodeCall(Account.initialize, (owner))
                 )
             )
         );
@@ -60,9 +48,6 @@ contract AccountFactory {
      */
     function getAddress(
         address owner,
-        address _zkBOBPool,
-        address _hypBOBCollateral,
-        address _hypBOB,
         uint256 salt
     ) public view returns (address) {
         return
@@ -73,10 +58,7 @@ contract AccountFactory {
                         type(ERC1967Proxy).creationCode,
                         abi.encode(
                             address(accountImplementation),
-                            abi.encodeCall(
-                                Account.initialize,
-                                (owner, _zkBOBPool, _hypBOBCollateral, _hypBOB)
-                            )
+                            abi.encodeCall(Account.initialize, (owner))
                         )
                     )
                 )

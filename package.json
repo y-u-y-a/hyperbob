@@ -37,6 +37,7 @@
     "@reduxjs/toolkit": "^1.9.1",
     "@simplewebauthn/typescript-types": "^7.0.0",
     "@uniswap/sdk-core": "^3.2.2",
+    "@uniswap/v3-core": "^1.0.1",
     "@uniswap/v3-periphery": "^1.4.3",
     "@uniswap/v3-sdk": "^3.9.0",
     "base64url": "^3.0.1",

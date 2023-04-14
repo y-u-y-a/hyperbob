@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 interface IHypERC20 {
-    function convertToCanonicalToken() external;
+    function convertToCanonicalToken(uint _amount) external;
 
     //function
 }
