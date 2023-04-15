@@ -100,7 +100,11 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
   const provider = new ethers.providers.JsonRpcProvider(activeNetwork.provider);
   // const { result, loading, callAccountApi } = useAccountApi();
 
-  const getPoolInfo = async (tokenA, tokenB, poolFee): Promise<PoolInfo> => {
+  const getPoolInfo = async (
+    tokenA: Token,
+    tokenB: Token,
+    poolFee: FeeAmount
+  ): Promise<PoolInfo> => {
     const currentPoolAddress = computePoolAddress({
       factoryAddress: PoolFactroyAddr,
       tokenA: tokenA,
@@ -352,7 +356,8 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
             />
           </FormControl>
           <Button
-            sx={{ marginLeft: 'auto', marginTop: 8 }}
+            fullWidth
+            sx={{ marginTop: 4 }}
             title="Confirm"
             onClick={changeTransaction}
             disabled={!gkAddress || !val}
