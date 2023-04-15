@@ -99,7 +99,6 @@ const AccountBalanceInfo = ({
               color: walletDeployed ? colors.success : colors.error,
             },
           }}
-          onClick={() => navigate('/deploy-account')}
           variant="outlined"
           icon={walletDeployed ? <CheckIcon /> : <CloseIcon />}
           label={
