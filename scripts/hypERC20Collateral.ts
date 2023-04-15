@@ -24,9 +24,8 @@ async function main() {
     [address.goerli.BOB, gas.DEST_GAS_AMOUNT]
   );
 
-  console.log('HypERC20Collateral Address: ', hyperc20CollAddr, 'on');
-
   if (await dep.isContractDeployed(hyperc20CollAddr)) {
+    console.log('Alreadey Deployed HypERC20Collateral: ', hyperc20CollAddr);
     return;
   }
 
