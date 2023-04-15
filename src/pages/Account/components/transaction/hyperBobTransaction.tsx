@@ -16,7 +16,9 @@ import {
   useBackgroundDispatch,
   useBackgroundSelector,
 } from '../../../App/hooks';
-import { sendTransactionRequest } from '../../../Background/redux-slices/transactions';
+import {
+  sendTransactionRequest
+} from '../../../Background/redux-slices/transactions';
 import { BigNumber, Contract, ContractFactory, Wallet, ethers } from 'ethers';
 import { gas } from '../../../../../utils/index';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
@@ -27,7 +29,9 @@ import {
   HypERC20Collateral__factory,
 } from '../../account-api/typechain-types';
 
-import { getActiveAccount } from '../../../Background/redux-slices/selectors/accountSelectors';
+import {
+  getActiveAccount
+} from '../../../Background/redux-slices/selectors/accountSelectors';
 import { utils } from '@hyperlane-xyz/utils';
 import { EthersTransactionRequest } from '../../../Background/services/types';
 
@@ -107,7 +111,7 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
         amountIn,
         GoerliUSDCAddr,
         callData,
-        ethers.utils.parseEther('0.022')
+        ethers.utils.parseEther("0.022")
       );
 
       console.log('PopTx: %s', PopTx);
