@@ -17,16 +17,9 @@ import {
   useBackgroundSelector,
 } from '../../../App/hooks';
 import {
-  sendTransactionRequest,
-  sendTransactionsRequest,
-  setModifyTransactionsRequest
+  sendTransactionRequest
 } from '../../../Background/redux-slices/transactions';
 import { BigNumber, Contract, ContractFactory, Wallet, ethers } from 'ethers';
-import {
-  DeterministicDeployer,
-  SimpleAccountAPI,
-} from '@account-abstraction/sdk';
-import config from '../../../../exconfig.json';
 import { gas } from '../../../../../utils/index';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
 import { Provider } from 'react-redux';
@@ -36,46 +29,13 @@ import {
   HypERC20Collateral__factory,
 } from '../../account-api/typechain-types';
 
-import ERC20ABI from '@openzeppelin/contracts/build/contracts/ERC20.json';
-import SwapRouterABI from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json';
-import QuoterABI from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json';
-import UniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json';
-import AccountArtifact from "./Account.json"
-
 import {
-  getActiveAccount,
-  getAccountInfo,
+  getActiveAccount
 } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { utils } from '@hyperlane-xyz/utils';
 import { EthersTransactionRequest } from '../../../Background/services/types';
 
-import {
-  Currency,
-  CurrencyAmount,
-  Percent,
-  Token,
-  TradeType,
-} from '@uniswap/sdk-core';
-import {
-  Pool,
-  Route,
-  SwapOptions,
-  FeeAmount,
-  SwapQuoter,
-  SwapRouter,
-  computePoolAddress,
-  Trade,
-} from '@uniswap/v3-sdk';
-import SwapRouterABI from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json';
-
 import JSBI from 'jsbi';
-import {
-  AccountImplementations,
-  ActiveAccountImplementation,
-} from '../../../Background/constants';
-import AccountApi from '../../account-api';
-import useAccountApi from '../../useAccountApi';
-import AccountAPI from '../../account-api/account-api';
 
 interface PoolInfo {
   token0: string;
@@ -115,7 +75,14 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
     // const transactions: EthersTransactionRequest[] = [];
 
     const account = Account__factory.connect(activeAccount, provider);
-    const initPopTx =
+
+    const init: boolean = true;
+
+    const amountIn = ethers.utils.parseUnits(val, 6);
+
+    let tx: EthersTransactionRequest;
+    if (init) {
+      const initPopTx =
       await account.populateTransaction.initializePrivateTransfer();
     const initTx: EthersTransactionRequest = {
       ...initPopTx,
@@ -184,20 +151,26 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
         HypERC20CollAddr,
         quotedAmountOut + 10 ** 18 * 100
       );
-    // gasLimit: 10000000,
-    const approveHypERC20CollTx: EthersTransactionRequest = {
-      ...approveHypERC20CollPop,
-      from: activeAccount,
-    };
-
-    transactions.push(approveHypERC20CollTx);
-
-    const values = [ethers.utils.toUtf8Bytes(gkAddress)];
-    const types = ['bytes'];
-
-    if ((await provider.getCode(activeAccount)) === '0x') {
-      types.push('address');
-      values.push(pubkey);
+  
+      console.log("amountIn: ", amountIn)
+  
+      const PopTx =
+      await account.populateTransaction.bridgBOB(
+        destChainID,
+        utils.addressToBytes32(activeAccount as string),
+        amountIn,
+        GoerliUSDCAddr,
+        callData,
+        ethers.utils.parseEther("0.022")
+      );
+  
+    console.log('PopTx: %s', PopTx);
+  
+     tx = {
+       ...PopTx,
+       from: activeAccount,
+       gasLimit: gas.GAS_LIMIT
+      };
     }
 
     const abiCorder = new ethers.utils.AbiCoder();

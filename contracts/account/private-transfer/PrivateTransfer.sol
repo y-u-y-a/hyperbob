@@ -34,7 +34,7 @@ abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
         // convert hypBOB to BOB
         // 1. approve hypBOB contract
         // 2. convertToCanonicalToken
-        convertHypBOBtoBOB(_amount);
+        _convertHypBOBtoBOB(_amount);
 
         // ( in case non-BOB is briddged from L1: swap ERC20 for BOB)
         // deposit BOB to zkBOB pool
@@ -43,17 +43,17 @@ abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
         _transferToBob(_zkAddress, _amount, address(this));
     }
 
-    function convertHypBOBtoBOB(uint _amount) internal {
+    function _convertHypBOBtoBOB(uint _amount) internal {
         // IERC20 bob = IERC20(0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f);
-        sBOB.approve(address(hypBOB), _amount);
+        hypBOB.approve(address(hypBOB), _amount);
 
         // convert hypBOB to canonical BOB
-        hypBOB.convertToCanonicalToken(_amount);
+        hypBOB.convertToCanonicalToken(address(this), _amount);
     }
 
     function _transferToBob(
         bytes memory _zkAddress,
-        uint256 amount,
+        uint256 _amount,
         address fallbackReceiver
     ) internal {
         // zK bob address for sepolia
@@ -66,38 +66,38 @@ abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
 
         // Option A, through pool contract
         // Note that ether is an alias for 10**18 multiplier, as BOB token has 18 decimals
-        sBOB.approve(address(queue), amount * 10 ** 18);
+        sBOB.approve(address(queue), _amount);
         uint256 depositId = queue.directDeposit(
             fallbackReceiver,
-            amount * 10 ** 18,
+            _amount,
             _zkAddress
         );
-        console.log('Deposit ID: %s', depositId);
+        //console.log('Deposit ID: %s', depositId);
 
         // Option B, through ERC677 token interface
         // bob.transferAndCall(address(queue), 100 ether, abi.encode(fallbackReceiver, zkAddress));
     }
 
-    function testTransferToBOB(
-        bytes memory _zkAddress,
-        uint256 amount,
-        address fallbackReceiver
-    ) public {
-        sBOB.approve(address(queue), amount * 10 ** 18);
-        uint256 depositId = queue.directDeposit(
-            fallbackReceiver,
-            amount * 10 ** 18,
-            _zkAddress
-        );
-    }
+    // function testTransferToBOB(
+    //     bytes memory _zkAddress,
+    //     uint256 amount,
+    //     address fallbackReceiver
+    // ) public {
+    //     sBOB.approve(address(queue), amount * 10 ** 18);
+    //     uint256 depositId = queue.directDeposit(
+    //         fallbackReceiver,
+    //         amount * 10 ** 18,
+    //         _zkAddress
+    //     );
+    // }
 
-    function checkDepositStatus() external view {
-        // IZkBobDirectDeposits.DirectDeposit memory deposit = queue
-        //     .getDirectDeposit(depositId);
-        // require(
-        //     deposit.status == IZkBobDirectDeposits.DirectDepositStatus.Completed
-        // );
-    }
+    // function checkDepositStatus() external view {
+    //     // IZkBobDirectDeposits.DirectDeposit memory deposit = queue
+    //     //     .getDirectDeposit(depositId);
+    //     // require(
+    //     //     deposit.status == IZkBobDirectDeposits.DirectDepositStatus.Completed
+    //     // );
+    // }
 
     function bridgBOB(
         uint32 _destination,
