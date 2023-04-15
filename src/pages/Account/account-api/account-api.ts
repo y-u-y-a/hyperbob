@@ -137,6 +137,17 @@ class AccountAPI extends AccountApiType {
     ]);
   }
 
+  async encodeExecuteBatch(
+    targets: string[],
+    datas: string[]
+  ): Promise<string> {
+    const accountContract = await this._getAccountContract();
+    return accountContract.interface.encodeFunctionData('executeBatch', [
+      targets,
+      datas,
+    ]);
+  }
+
   async signUserOpHash(userOpHash: string): Promise<string> {
     return await this.owner.signMessage(arrayify(userOpHash));
   }
@@ -158,6 +169,99 @@ class AccountAPI extends AccountApiType {
       signature: await this.signUserOpHash(await this.getUserOpHash(userOp)),
     };
   };
+
+  async encodeUserOpCallDataAndGasLimitBatch(
+    txs: TransactionDetailsForUserOp[]
+  ) {
+    const targets: string[] = [];
+    const datas: string[] = [];
+
+    for (var i = 0; i < txs.length; i++) {
+      targets.push(txs[i].target);
+      datas.push(txs[i].data);
+    }
+
+    const callData = await this.encodeExecuteBatch(targets, datas);
+
+    const callGasLimit = await this.provider.estimateGas({
+      from: this.entryPointAddress,
+      to: this.getAccountAddress(),
+      data: callData,
+    });
+    return {
+      callData,
+      callGasLimit,
+    };
+  }
+
+  // async createUnsignedUserOpBatch(infos: TransactionDetailsForUserOp[]) {
+  //   const { callData, callGasLimit } =
+  //     await this.encodeUserOpCallDataAndGasLimitBatch(infos);
+
+  //   let finalMaxFeePerGas, finalMaxPriorityFeePerGas;
+  //   for (var i = 0; i < infos.length; i++) {
+  //     let { maxFeePerGas, maxPriorityFeePerGas } = infos[i];
+  //     if finalMaxFeePerGas > maxFeePerGas ?
+  //     infos[i];
+  //   }
+  //   var _a, _b;
+
+  //   let { maxFeePerGas, maxPriorityFeePerGas } = info;
+  //   if (maxFeePerGas == null || maxPriorityFeePerGas == null) {
+  //     // プロバイダから取ってくる
+  //     const feeData = await this.provider.getFeeData();
+  //     // maxFeePerGasがnillだったらいれる
+  //     if (maxFeePerGas == null) {
+  //       maxFeePerGas =
+  //         (_a = feeData.maxFeePerGas) !== null && _a !== void 0
+  //           ? _a
+  //           : undefined;
+  //     }
+  //     // maxPriorityFeePerGasがnillだったらいれる
+  //     if (maxPriorityFeePerGas == null) {
+  //       maxPriorityFeePerGas =
+  //         (_b = feeData.maxPriorityFeePerGas) !== null && _b !== void 0
+  //           ? _b
+  //           : undefined;
+  //     }
+  //   }
+
+  //   const initCode = await this.getInitCode();
+  //   const initGas = await this.estimateCreationGas(initCode);
+  //   const verificationGasLimit = ethers_1.BigNumber.from(
+  //     await this.getVerificationGasLimit()
+  //   ).add(initGas);
+
+  //   const partialUserOp = {
+  //     sender: this.getAccountAddress(),
+  //     nonce: this.getNonce(),
+  //     initCode,
+  //     callData,
+  //     callGasLimit,
+  //     verificationGasLimit,
+  //     maxFeePerGas,
+  //     maxPriorityFeePerGas,
+  //     paymasterAndData: '0x',
+  //   };
+  //   let paymasterAndData;
+  //   if (this.paymasterAPI != null) {
+  //     // fill (partial) preVerificationGas (all except the cost of the generated paymasterAndData)
+  //     const userOpForPm = Object.assign(Object.assign({}, partialUserOp), {
+  //       preVerificationGas: await this.getPreVerificationGas(partialUserOp),
+  //     });
+  //     paymasterAndData = await this.paymasterAPI.getPaymasterAndData(
+  //       userOpForPm
+  //     );
+  //   }
+  //   partialUserOp.paymasterAndData =
+  //     paymasterAndData !== null && paymasterAndData !== void 0
+  //       ? paymasterAndData
+  //       : '0x';
+  //   return Object.assign(Object.assign({}, partialUserOp), {
+  //     preVerificationGas: this.getPreVerificationGas(partialUserOp),
+  //     signature: '',
+  //   });
+  // }
 }
 
 export default AccountAPI;

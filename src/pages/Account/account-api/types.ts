@@ -19,6 +19,10 @@ export abstract class AccountApiType extends BaseAccountAPI {
     userOp: UserOperationStruct,
     context?: any
   ): Promise<UserOperationStruct>;
+
+  abstract createUnsignedUserOpBatch(
+    infos: TransactionDetailsForUserOp[]
+  ): Promise<UserOperationStruct>;
 }
 
 export interface AccountApiParamsType<T> extends BaseApiParams {
