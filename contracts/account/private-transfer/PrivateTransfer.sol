@@ -9,10 +9,6 @@ import "./PriavteTransferStorage.sol";
 abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
     using TypeCasts for bytes32;
 
-    function _initializePrivateTransfer() internal {
-        _registerERC777();
-    }
-
     function tokensReceived(
         address operator,
         address from,
