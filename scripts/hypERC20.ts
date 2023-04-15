@@ -14,6 +14,7 @@ async function main() {
     gas.GAS_AMOUNT
   );
 
+  address.sepolia.hypERC = hyperBOBFactory.address;
   console.log('hyperBOBAddress: ', hyperBOBFactory.address);
 }
 
