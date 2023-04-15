@@ -32,7 +32,7 @@ const TransferAssetButton = ({ activeAccount }: Props) => {
           },
         ],
       });
-      console.log(txHash);
+      console.log('txHash: ', JSON.stringify(txHash));
     }
   }, [activeAccount]);
 
