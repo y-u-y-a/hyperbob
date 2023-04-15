@@ -2,8 +2,10 @@
 pragma solidity >=0.8.0;
 
 import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 import {TokenRouter} from "@hyperlane-xyz/hyperlane-token/contracts/libs/TokenRouter.sol";
 import {ERC777, Context, IERC20} from "@openzeppelin/contracts/token/ERC777/ERC777.sol";
+import {IAccountFactory} from "../account/interfaces/IAccountFactory.sol";
 
 /**
  * @title Hyperlane ERC20 Token Router that extends ERC20 with remote transfer functionality.
@@ -12,28 +14,31 @@ import {ERC777, Context, IERC20} from "@openzeppelin/contracts/token/ERC777/ERC7
  */
 contract HypERC20 is TokenRouter, ERC777 {
     address public canonicalToken;
+    IAccountFactory public accountFactory;
+    using Address for address;
 
     constructor(
         string memory _name,
         string memory _symbol,
         address[] memory defaultOperators,
+        address _canonicalToken,
         uint256 _gasAmount
     ) ERC777(_name, _symbol, defaultOperators) TokenRouter(_gasAmount) {
         // decimalsConfig = _decimals; or 18
+        canonicalToken = _canonicalToken;
     }
 
     function initialize(
+        address _accountFactory,
         address _mailbox,
-        address _interchainGasPaymaster,
-        address _canonicalToken
+        address _interchainGasPaymaster
     ) external initializer {
+        accountFactory = IAccountFactory(_accountFactory);
         // transfers ownership to `msg.sender`
         __HyperlaneConnectionClient_initialize(
             _mailbox,
             _interchainGasPaymaster
         );
-
-        canonicalToken = _canonicalToken;
     }
 
     function _transferFromSender(
@@ -49,21 +54,38 @@ contract HypERC20 is TokenRouter, ERC777 {
         uint256 _amount,
         bytes calldata _calldata // no metadata
     ) internal override {
-        _mint(_recipient, _amount, _calldata, bytes(""));
+        bytes memory zkAddress;
+
+        // deploy Account if it's not deployed.
+        if (!Address.isContract(_recipient)) {
+            (bytes memory _zkAddress, address owner) = abi.decode(
+                _calldata,
+                (bytes, address)
+            );
+
+            address calculatedAccAddr = accountFactory.getAddress(owner, 0);
+            require(calculatedAccAddr == _recipient, "INVALID_ACCOUNT_ADDRESS");
+
+            accountFactory.createAccount(owner, 0);
+            zkAddress = _zkAddress;
+        } else {
+            zkAddress = _calldata;
+        }
+
+        _mint(_recipient, _amount, zkAddress, bytes(""));
     }
 
     function convertToCanonicalToken(address _receiver, uint _amount) external {
-        require(balanceOf(msg.sender) >= _amount, "INSUFFICIENT_AMOUNT");
         require(
-            _getCanoTokenBal(address(this)) >= _amount,
-            "INSUFFICIENT_BALANCE"
+            balanceOf(msg.sender) >= _amount,
+            "INSUFFICIENT_HYPBOB_BALANCE"
+        );
+        require(
+            IERC20(canonicalToken).balanceOf(address(this)) >= _amount,
+            "INSUFFICIENT_BOB_BALANCE"
         );
         IERC20(canonicalToken).transfer(_receiver, _amount);
         _burn(_receiver, _amount, bytes(""), bytes(""));
-    }
-
-    function _getCanoTokenBal(address _addr) internal view returns (uint) {
-        return IERC20(canonicalToken).balanceOf(_addr);
     }
 
     function _msgSender()

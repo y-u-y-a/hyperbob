@@ -1,31 +1,39 @@
 export const address = {
   goerli: {
-    storageGasOracle: '0xce8E9D701A1DFfe672c1d8dB20De2B3fa6F4437D',
-    validatorAnnounce: '0x3Fc742696D5dc9846e04f7A1823D92cb51695f9a',
-    proxyAdmin: '0x8f919348F9C4619A196Acb5e377f49E5E2C0B569',
+    // hyperlane
     mailbox: '0xCC737a94FecaeC165AbCf12dED095BB13F037685',
-    interchainGasPaymaster: '0x8f9C3888bFC8a5B25AED115A82eCbb788b196d2a',
     defaultIsmInterchainGasPaymaster:
       '0xF90cB82a76492614D07B82a7658917f3aC811Ac1',
-    multisigIsm: '0x32B34F0D86b275b92e9289d9054Db5Ec32d2CC6C',
     testRecipient: '0xBC3cFeca7Df5A45d61BC60E7898E63670e1654aE',
-    interchainQueryRouter: '0xF782C6C4A02f2c71BB8a1Db0166FAB40ea956818',
-    bob: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
-    hypERCCollateral: '0xe903BB1EAF963bbFad9e53080453bd35446f97A6',
+    weth: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+
+    // zkBOB
+    BOB: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
+    // hyperBOB
+    accountImp: '0xeb3d8191d134B40fF093eB9FA56adEdE3389d6a6',
+    accountFactory: '0xa518f6ba96d609ba92bdb42e0a5226a5349d310e',
+    hypERCCollateral: '0xd06532148869ba2fdb1af29c79ba79002a833be0',
+
+    // Uniswap
+    router: '0x4648a43B2C14Da09FdF82B161150d3F634f40491',
   },
   sepolia: {
-    storageGasOracle: '0x1D5EbC3e15e9ECDe0e3530C85899556797eeaea5',
-    validatorAnnounce: '0x3Fc742696D5dc9846e04f7A1823D92cb51695f9a',
-    proxyAdmin: '0x7FE7EA170cf08A25C2ff315814D96D93C311E692',
+    //hyperlane
     mailbox: '0xCC737a94FecaeC165AbCf12dED095BB13F037685',
-    interchainGasPaymaster: '0x8f9C3888bFC8a5B25AED115A82eCbb788b196d2a',
     defaultIsmInterchainGasPaymaster:
       '0xF987d7edcb5890cB321437d8145E3D51131298b6',
-    multisigIsm: '0xD3d062a5dcBA85ae863618d4c264d2358300c283',
-    testRecipient: '0xBC3cFeca7Df5A45d61BC60E7898E63670e1654aE',
-    bob: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
+    weth: '0xdd13E55209Fd76AfE204dBda4007C227904f0a81',
 
-    hypERC: '0xD98DF34d83ca1cc87a4C39f393492F2eA0d516e5',
-    mockReceiver: '0xB7ab0BD602DC7dB007199Ce7e365E1DeFC4dfb27',
+    // zkBOB
+    BOB: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
+    DIRECT_DEPOSIT: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
+
+    // hyperBOB
+    accountImp: '0x3e809ab2E61A6734Fea18E3F781a7c4b87c8291E',
+    accountFactory: '0xa518f6ba96d609ba92bdb42e0a5226a5349d310e',
+    hypERC: '0x0c98a817242eb4978613f60e4f4820840e7a5a12',
+  },
+  common: {
+    entryPoint: '0x0576a174D229E3cFA37253523E645A78A0C91B57',
   },
 };

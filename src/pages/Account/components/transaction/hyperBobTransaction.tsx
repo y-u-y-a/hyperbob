@@ -7,19 +7,21 @@ import {
   useBackgroundSelector,
 } from '../../../App/hooks';
 import { sendTransactionsRequest } from '../../../Background/redux-slices/transactions';
-import { ethers } from 'ethers';
+import { Contract, ContractFactory, ethers } from 'ethers';
 import { DeterministicDeployer } from '@account-abstraction/sdk';
 import config from '../../../../exconfig.json';
 import { gas } from '../../../../../utils/index';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
 import { Provider } from 'react-redux';
-import {
-  HypERC20Collateral__factory,
-  ISwapRouter__factory,
-  Quoter__factory,
-  IUniswapV3Pool__factory,
-  ERC20__factory,
-} from '../../account-api/typechain-types';
+
+import { HypERC20Collateral__factory } from '../../account-api/typechain-types';
+
+import HypERC20CollateralABI from '../../../../artifacts/contracts/bridge/HypERC20Collateral.sol/HypERC20Collateral.json';
+import ERC20ABI from '@openzeppelin/contracts/build/contracts/ERC20.json';
+import SwapRouterABI from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json';
+import QuoterABI from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json';
+import UniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json';
+
 import {
   getActiveAccount,
   getAccountInfo,
@@ -46,7 +48,6 @@ import {
 } from '@uniswap/v3-sdk';
 
 import JSBI from 'jsbi';
-import { AbiCoder } from 'ethers/lib/utils.js';
 
 interface PoolInfo {
   token0: string;
@@ -83,7 +84,13 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
       fee: poolFee,
     });
 
-    const pool = IUniswapV3Pool__factory.connect(currentPoolAddress, provider);
+    UniswapV3PoolABI;
+
+    const pool = new ethers.Contract(
+      currentPoolAddress,
+      UniswapV3PoolABI.abi,
+      provider
+    );
 
     const [token0, token1, fee, tickSpacing, liquidity, slot0] =
       await Promise.all([
@@ -133,11 +140,13 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
 
     console.log(chainID, activeAccount, tokenAddress);
 
+    
     const transactions: EthersTransactionRequest[] = [];
 
     const amountIn = ethers.utils.parseUnits(val, 18);
 
-    const quoter = Quoter__factory.connect(QuoterAddr, provider);
+    const quoter = new Contract(QuoterAddr, QuoterABI.abi, provider);
+
     const quotedAmountOut = await quoter.callStatic.quoteExactInputSingle(
       GoerliUSDCAddr,
       GoerliBOBAddr,
@@ -179,7 +188,7 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
       tradeType: TradeType.EXACT_INPUT,
     });
 
-    const erc20 = ERC20__factory.connect(GoerliBOBAddr, provider);
+    const erc20 = new Contract(GoerliBOBAddr, ERC20ABI.abi, provider);
 
     const approvePop = await erc20.populateTransaction.approve(
       SwapRouterAddr,
