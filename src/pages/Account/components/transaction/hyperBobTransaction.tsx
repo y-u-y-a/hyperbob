@@ -9,6 +9,7 @@ import {
 import {
   sendTransactionRequest,
   sendTransactionsRequest,
+  setModifyTransactionsRequest
 } from '../../../Background/redux-slices/transactions';
 import { Contract, ContractFactory, Wallet, ethers } from 'ethers';
 import {
@@ -29,6 +30,7 @@ import ERC20ABI from '@openzeppelin/contracts/build/contracts/ERC20.json';
 import SwapRouterABI from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json';
 import QuoterABI from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json';
 import UniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json';
+import AccountArtifact from "./Account.json"
 
 import {
   getActiveAccount,
@@ -74,7 +76,7 @@ interface PoolInfo {
   tick: number;
 }
 
-// const chainID = '11155111';
+const destChainID = 11155111;
 const QuoterAddr = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6';
 const PoolFactroyAddr = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
 const GoerliUSDCAddr = '0x07865c6e87b9f70255377e024ace6630c1eaa37f';
@@ -91,44 +93,6 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
   const activeNetwork = useBackgroundSelector(getActiveNetwork);
   const activeAccount = useBackgroundSelector(getActiveAccount);
   const provider = new ethers.providers.JsonRpcProvider(activeNetwork.provider);
-  // const { result, loading, callAccountApi } = useAccountApi();
-
-  const getPoolInfo = async (tokenA, tokenB, poolFee): Promise<PoolInfo> => {
-    const currentPoolAddress = computePoolAddress({
-      factoryAddress: PoolFactroyAddr,
-      tokenA: tokenA,
-      tokenB: tokenB,
-      fee: poolFee,
-    });
-
-    UniswapV3PoolABI;
-
-    const pool = new ethers.Contract(
-      currentPoolAddress,
-      UniswapV3PoolABI.abi,
-      provider
-    );
-
-    const [token0, token1, fee, tickSpacing, liquidity, slot0] =
-      await Promise.all([
-        pool.token0(),
-        pool.token1(),
-        pool.fee(),
-        pool.tickSpacing(),
-        pool.liquidity(),
-        pool.slot0(),
-      ]);
-
-    return {
-      token0,
-      token1,
-      fee,
-      tickSpacing,
-      liquidity,
-      sqrtPriceX96: slot0[0],
-      tick: slot0[1],
-    };
-  };
 
   const changeTransaction = async () => {
     // TODO: 新しいトランザクションを作成をすれば確認画面へ遷移する
@@ -136,177 +100,67 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
     // console.log('transaction: %s:', JSON.stringify(transaction));
 
     const pubkey = '0xa321ff522233D0486F00370a15705F0406B641D4';
-    const transactions: EthersTransactionRequest[] = [];
+    // const transactions: EthersTransactionRequest[] = [];
 
     const chainID = parseInt(activeNetwork.chainID);
     const account = Account__factory.connect(activeAccount, provider);
 
-    const initPopTx =
+    const init: boolean = false;
+
+    const amountIn = ethers.utils.parseUnits(val, 6);
+
+    let tx: EthersTransactionRequest;
+    if (init) {
+      const initPopTx =
       await account.populateTransaction.initializePrivateTransfer();
 
-    console.log('initPopTx: %s', initPopTx);
+       console.log('initPopTx: %s', initPopTx);
 
-    const initTx: EthersTransactionRequest = {
+       tx = {
       ...initPopTx,
       from: activeAccount,
     };
 
-    transactions.push(initTx);
-
-    console.log('chainID: ', chainID);
-
-    const HypERC20CollFactory = new HypERC20Collateral__factory();
-
-    const dep = new DeterministicDeployer(provider);
-    const HypERC20CollAddr =
-      DeterministicDeployer.getDeterministicDeployAddress(
-        HypERC20CollFactory,
-        0,
-        [GoerliBOBAddr, gas.DEST_GAS_AMOUNT]
+    } else {
+      const a = [gkAddress];
+      console.log('pubkey %s', pubkey);
+  
+        a.push(pubkey);
+  
+      const abiCorder = new ethers.utils.AbiCoder();
+      const callData = abiCorder.encode(
+        ['bytes', 'address'],
+        [ethers.utils.toUtf8Bytes(gkAddress), pubkey]
       );
-
-    if (!(await dep.isContractDeployed(HypERC20CollAddr))) {
-      // thowError
-      console.log('ないよ！！', HypERC20CollAddr);
-      // tokenAddressに対応したブリッジがないよ
+  
+      console.log("amountIn: ", amountIn)
+  
+      const PopTx =
+      await account.populateTransaction.bridgBOB(
+        destChainID,
+        utils.addressToBytes32(activeAccount as string),
+        amountIn,
+        GoerliUSDCAddr,
+        callData,
+        ethers.utils.parseEther("0.02")
+      );
+  
+    console.log('PopTx: %s', PopTx);
+  
+     tx = {
+       ...PopTx,
+       from: activeAccount,
+       gasLimit: gas.GAS_LIMIT
+      };
     }
 
-    const HypERC20Coll = HypERC20CollFactory.attach(HypERC20CollAddr);
-
-    console.log(chainID, activeAccount, tokenAddress);
-
-    const amountIn = ethers.utils.parseUnits(val, 6);
-
-    const quoter = new Contract(QuoterAddr, QuoterABI.abi, provider);
-
-    const quotedAmountOut = await quoter.callStatic.quoteExactInputSingle(
-      GoerliUSDCAddr,
-      GoerliBOBAddr,
-      FeeAmount.LOW,
-      amountIn,
-      0
-    );
-
-    const usdcToken = new Token(chainID, GoerliUSDCAddr, 6);
-    const bobToken = new Token(chainID, GoerliBOBAddr, 18);
-    console.log('amountin: %s', amountIn);
-    console.log('val: %s', val);
-
-    const poolInfo = await getPoolInfo(usdcToken, bobToken, FeeAmount.LOW);
-
-    const pool = new Pool(
-      usdcToken,
-      bobToken,
-      FeeAmount.LOW,
-      poolInfo.sqrtPriceX96.toString(),
-      poolInfo.liquidity.toString(),
-      poolInfo.tick
-    );
-
-    const swapRoute = new Route([pool], usdcToken, bobToken);
-
-    const uncheckedTrade = Trade.createUncheckedTrade({
-      route: swapRoute,
-      inputAmount: CurrencyAmount.fromRawAmount(
-        usdcToken,
-        fromReadableAmount(parseInt(val), 6).toString()
-      ),
-      outputAmount: CurrencyAmount.fromRawAmount(
-        bobToken,
-        JSBI.BigInt(quotedAmountOut)
-      ),
-      tradeType: TradeType.EXACT_INPUT,
-    });
-
-    const bobTokenContract = new Contract(
-      GoerliBOBAddr,
-      ERC20ABI.abi,
-      provider
-    );
-
-    const approvePop = await bobTokenContract.populateTransaction.approve(
-      SwapRouterAddr,
-      amountIn
-    );
-
-    const approveTx: EthersTransactionRequest = {
-      ...approvePop,
-      from: activeAccount,
-    };
-
-    transactions.push(approveTx);
-
-    const options: SwapOptions = {
-      slippageTolerance: new Percent(500, 10000), // 50 bips, or 0.50%
-      deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
-      recipient: activeAccount,
-    };
-
-    const methodParameters = SwapRouter.swapCallParameters(
-      [uncheckedTrade],
-      options
-    );
-
-    let tradeTx = {
-      data: methodParameters.calldata,
-      to: SwapRouterAddr,
-      // value: methodParameters.value,
-    };
-
-    transactions.push(tradeTx);
-
-    const approveHypERC20CollPop =
-      await bobTokenContract.populateTransaction.approve(
-        HypERC20CollAddr,
-        quotedAmountOut
-      );
-
-    const approveHypERC20CollTx: EthersTransactionRequest = {
-      ...approveHypERC20CollPop,
-      from: activeAccount,
-    };
-
-    transactions.push(approveHypERC20CollTx);
-
-    const a = [gkAddress];
-    console.log('pubkey %s', pubkey);
-
-    if ((await provider.getCode(activeAccount)) === '0x') {
-      a.push(pubkey);
-    }
-
-    const abiCorder = new ethers.utils.AbiCoder();
-    const callData = abiCorder.encode(
-      ['bytes', 'address'],
-      [ethers.utils.toUtf8Bytes(gkAddress), pubkey]
-    );
-
-    const hyperlaneTxPop =
-      await HypERC20Coll.populateTransaction.transferRemoteWithCalldata(
-        chainID,
-        utils.addressToBytes32(activeAccount),
-        ethers.utils.parseEther(val),
-        callData
-      );
-
-    const hyperlaneTx: EthersTransactionRequest = {
-      ...hyperlaneTxPop,
-      from: activeAccount,
-    };
-
-    console.log('hyperlaneTxPop: %s', JSON.stringify(hyperlaneTxPop));
-
-    transactions.push(hyperlaneTx);
-
-    console.log('transaction: %s', JSON.stringify(initTx));
-
-    await backgroundDispatch(
-      // transactionRequestのstateを変更する
-      sendTransactionRequest({
-        transactionRequest: initTx,
-        origin: '',
+    const res = await backgroundDispatch(
+      await sendTransactionRequest({
+        transactionRequest: tx,
+        origin: ''
       })
     );
+    console.log("res: ", res)
     onComplete(transaction, undefined);
   };
 

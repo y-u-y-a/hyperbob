@@ -1,38 +1,22 @@
 export const address = {
   goerli: {
-    // hyperlane
     mailbox: '0xCC737a94FecaeC165AbCf12dED095BB13F037685',
     defaultIsmInterchainGasPaymaster:
       '0xF90cB82a76492614D07B82a7658917f3aC811Ac1',
-    testRecipient: '0xBC3cFeca7Df5A45d61BC60E7898E63670e1654aE',
-    weth: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-
-    // zkBOB
     BOB: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
-    // hyperBOB
-    accountImp: '0xeb3d8191d134B40fF093eB9FA56adEdE3389d6a6',
-    accountFactory: '0x38548FaEBfd61D8Ce066380484841735c68880ea',
-    // old: 0x95751b91b1d34537cd8a208d9b39093538d9d510
-    hypERCCollateral: '0x1ECB226C20978B81f21041D71Eebc15Db8D2D7C3',
-
-    // Uniswap
-    router: '0x4648a43B2C14Da09FdF82B161150d3F634f40491',
+    accountFactory: '0xB7B3e2d95B110988De1208547f40464B78Ba77dA',
+    accountImp: '0x7F1f2425A644F20c930eAe8570714Fc07d625751',
+    hypERCCollateral: '0xB3B6505cB4CAcEFE38E0ec635Ce595791b1B6f32',
   },
   sepolia: {
-    //hyperlane
     mailbox: '0xCC737a94FecaeC165AbCf12dED095BB13F037685',
     defaultIsmInterchainGasPaymaster:
       '0xF987d7edcb5890cB321437d8145E3D51131298b6',
-    weth: '0xdd13E55209Fd76AfE204dBda4007C227904f0a81',
-
-    // zkBOB
     BOB: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
     DIRECT_DEPOSIT: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
-
-    // hyperBOB
-    accountImp: '0x3e809ab2E61A6734Fea18E3F781a7c4b87c8291E',
-    accountFactory: '0xEf5624D20B5c424b8eE18F1DA38C265faf018B52',
-    hypERC: '0x79439b04066E15715A4e9D2c926EA02B01a00435',
+    accountFactory: '0x7da3027Bb648AB61181A42875f49bE4DDa3dAf64',
+    accountImp: '0xd268c2062575Aab7ae5771dAf18D840dB291bA67',
+    hypERC: '0x886638597B6FAe51858Bd777d51192d100401274',
   },
   common: {
     entryPoint: '0x0576a174D229E3cFA37253523E645A78A0C91B57',

@@ -13,6 +13,7 @@ async function main() {
   );
 
   console.log('AccountFactory Address: ', accountFactory.address);
+  console.log('Account Imp Address: ', await accountFactory.callStatic.accountImplementation())
 }
 
 // We recommend this pattern to be able to use async/await everywhere
