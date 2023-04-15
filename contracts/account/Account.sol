@@ -8,6 +8,9 @@ contract Account is SimpleAccount, PrivateTransfer {
 
     function initialize(address _owner) public override initializer {
         _initialize(_owner);
-        _initializePrivateTransfer();
+    }
+    
+    function initializePrivateTransfer() public {
+        _registerERC777();
     }
 }
