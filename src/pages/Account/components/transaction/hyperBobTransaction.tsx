@@ -83,31 +83,29 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
     let tx: EthersTransactionRequest;
     if (init) {
       const initPopTx =
-      await account.populateTransaction.initializePrivateTransfer();
+        await account.populateTransaction.initializePrivateTransfer();
 
-       console.log('initPopTx: %s', initPopTx);
+      console.log('initPopTx: %s', initPopTx);
 
-       tx = {
-      ...initPopTx,
-      from: activeAccount,
-    };
-
+      tx = {
+        ...initPopTx,
+        from: activeAccount,
+      };
     } else {
       const a = [gkAddress];
       console.log('pubkey %s', pubkey);
-  
-        a.push(pubkey);
-  
+
+      a.push(pubkey);
+
       const abiCorder = new ethers.utils.AbiCoder();
       const callData = abiCorder.encode(
         ['bytes', 'address'],
         [ethers.utils.toUtf8Bytes(gkAddress), pubkey]
       );
-  
-      console.log("amountIn: ", amountIn)
-  
-      const PopTx =
-      await account.populateTransaction.bridgBOB(
+
+      console.log('amountIn: ', amountIn);
+
+      const PopTx = await account.populateTransaction.bridgBOB(
         destChainID,
         utils.addressToBytes32(activeAccount as string),
         amountIn,
@@ -115,23 +113,23 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
         callData,
         ethers.utils.parseEther("0.022")
       );
-  
-    console.log('PopTx: %s', PopTx);
-  
-     tx = {
-       ...PopTx,
-       from: activeAccount,
-       gasLimit: gas.GAS_LIMIT
+
+      console.log('PopTx: %s', PopTx);
+
+      tx = {
+        ...PopTx,
+        from: activeAccount,
+        gasLimit: gas.GAS_LIMIT,
       };
     }
 
     const res = await backgroundDispatch(
       await sendTransactionRequest({
         transactionRequest: tx,
-        origin: ''
+        origin: '',
       })
     );
-    console.log("res: ", res)
+    console.log('res: ', res);
     onComplete(transaction, undefined);
   };
 
@@ -139,16 +137,19 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
     <Center
       minHeight="100vh"
       height="100%"
-      width="60%"
+      width="90%"
       marginX="auto"
       // {...props}
     >
-      <Header mb={2} />
       <BorderBox>
-        <HeadTitle title="Transfer ETH" />
-        <Typography marginBottom={4} width="100%" variant="body1" color="white">
-          Please Enter below.
-        </Typography>
+        <Typography
+          marginBottom={4}
+          width="100%"
+          color="white"
+          fontSize="24px"
+          fontWeight="bold"
+          children="Transfer ETH"
+        />
         <FormGroup sx={{ width: '100%' }}>
           {/* zkAddress */}
           <FormControl sx={{ mb: 2 }} fullWidth variant="outlined">
@@ -167,7 +168,8 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
             />
           </FormControl>
           <Button
-            sx={{ marginLeft: 'auto', marginTop: 8 }}
+            fullWidth
+            sx={{ marginTop: 4 }}
             title="Confirm"
             onClick={changeTransaction}
             disabled={!gkAddress || !val}

@@ -1,14 +1,4 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  CardActions,
-  CardContent,
-  Link,
-  Stack,
-  Typography,
-} from '@mui/material';
-import logo from '../../../../assets/img/logo.svg';
 import { useNavigate } from 'react-router-dom';
 import { HeadTitle } from '../../../../components/HeadTitle';
 import { Button } from '../../../../components/Button';
