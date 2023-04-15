@@ -60,7 +60,6 @@ const SignTransactionConfirmation = ({
   onReject,
   onSend,
 }: Props) => {
-    // NOTE: 確認コンポーネント
   return (
     <Box px={2} color="white">
       <Typography
@@ -174,11 +173,11 @@ const SignTransactionRequest = () => {
             })
           );
         } catch (e) {
-          window.alert(e)
+          window.alert(e);
         }
       }
-      window.alert('sent transaction')
-      console.log('sent tx done')
+      window.alert('sent transaction');
+      console.log('sent tx done');
 
       window.close();
     },
@@ -231,7 +230,6 @@ const SignTransactionRequest = () => {
       />
     );
 
-  // NOTE: ダミーコンポーネントを返す
   return SignTransactionComponent &&
     sendTransactionRequest.transactionRequest ? (
     <SignTransactionComponent

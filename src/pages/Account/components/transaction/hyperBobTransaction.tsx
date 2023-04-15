@@ -1,12 +1,9 @@
-import { Box, Input, Stack } from '@mui/material';
 import React, { FC, useState } from 'react';
 
-import { BoxProps, FormControl, FormGroup, Typography } from '@mui/material';
+import { FormControl, FormGroup, Typography } from '@mui/material';
 import { BorderBox } from '../../../../components/BorderBox';
 import { Center } from '../../../../components/Center';
 import { FormInput } from '../../../../components/FormInput';
-import { HeadTitle } from '../../../../components/HeadTitle';
-import Header from '../../../App/components/header';
 import { colors } from '../../../../config/const';
 import { Button } from '../../../../components/Button';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -324,16 +321,19 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
     <Center
       minHeight="100vh"
       height="100%"
-      width="60%"
+      width="90%"
       marginX="auto"
       // {...props}
     >
-      <Header mb={2} />
       <BorderBox>
-        <HeadTitle title="Transfer ETH" />
-        <Typography marginBottom={4} width="100%" variant="body1" color="white">
-          Please Enter below.
-        </Typography>
+        <Typography
+          marginBottom={4}
+          width="100%"
+          color="white"
+          fontSize="24px"
+          fontWeight="bold"
+          children="Transfer ETH"
+        />
         <FormGroup sx={{ width: '100%' }}>
           {/* zkAddress */}
           <FormControl sx={{ mb: 2 }} fullWidth variant="outlined">
