@@ -10,24 +10,32 @@ async function main() {
   const [signer] = await ethers.getSigners();
 
   const factory = new HypERC20__factory(signer);
-  const dep = new DeterministicDeployer(ethers.provider);
+  // const dep = new DeterministicDeployer(ethers.provider);
 
-  const hyperBOBAddr = await dep.deterministicDeploy(factory, 0, [
+  // const hyperBOBAddr = await dep.deterministicDeploy(factory, 0, [
+  //   'hypBOB',
+  //   'hWBOB',
+  //   [],
+  //   address.sepolia.BOB,
+  //   gas.GAS_AMOUNT,
+  // ]);
+
+  // if (await dep.isContractDeployed(hyperBOBAddr)) {
+  //   console.log('hyperBOB alreadey deployed on %s', hyperBOBAddr);
+  //   return;
+  // }
+
+  const hyperBOBFactory = await factory.deploy(
     'hypBOB',
     'hWBOB',
     [],
     address.sepolia.BOB,
-    gas.GAS_AMOUNT,
-  ]);
+    gas.GAS_AMOUNT
+  );
 
-  if (await dep.isContractDeployed(hyperBOBAddr)) {
-    console.log('hyperBOB alreadey deployed on %s', hyperBOBAddr);
-    return;
-  }
+  const hyperBOB = factory.attach(hyperBOBFactory.address);
 
-  const hyperBOB = factory.attach(hyperBOBAddr);
-
-  console.log('hyperBOBAddress: ', hyperBOBAddr, 'on');
+  console.log('hyperBOBAddress: ', hyperBOBFactory.address);
 
   const initTx = await hyperBOB.initialize(
     address.sepolia.accountFactory,
@@ -38,14 +46,6 @@ async function main() {
 
   const recepit1 = await initTx.wait();
   console.log('tx hash for initialize(): ', recepit1.transactionHash);
-
-  const enrollTx = await hyperBOB.enrollRemoteRouter(
-    5,
-    utils.addressToBytes32(address.goerli.hypERCCollateral)
-  );
-
-  const recepit2 = await enrollTx.wait();
-  console.log('tx hash for enrollRemoteRouter(): ', recepit2.transactionHash);
 }
 
 main().catch((error) => {

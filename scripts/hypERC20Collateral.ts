@@ -17,26 +17,31 @@ async function main() {
   console.log('signer address: %s', await signer.getAddress());
 
   const factory = new HypERC20Collateral__factory(signer);
-  const dep = new DeterministicDeployer(ethers.provider);
-  const hyperc20CollAddr = DeterministicDeployer.getDeterministicDeployAddress(
-    factory,
-    0,
-    [address.goerli.BOB, gas.DEST_GAS_AMOUNT]
+
+  // const dep = new DeterministicDeployer(ethers.provider);
+  // const hyperc20CollAddr = DeterministicDeployer.getDeterministicDeployAddress(
+  //   factory,
+  //   0,
+  //   [address.goerli.BOB, gas.DEST_GAS_AMOUNT]
+  // );
+
+  // if (await dep.isContractDeployed(hyperc20CollAddr)) {
+  //   console.log('Alreadey Deployed HypERC20Collateral: ', hyperc20CollAddr);
+  //   return;
+  // }
+
+  // await dep.deterministicDeploy(factory, 0, [
+  //   address.goerli.BOB,
+  //   gas.DEST_GAS_AMOUNT,
+  // ]);
+
+  const hyperERC20Coll = await factory.deploy(
+    address.goerli.BOB,
+    gas.DEST_GAS_AMOUNT
   );
 
-  if (await dep.isContractDeployed(hyperc20CollAddr)) {
-    console.log('Alreadey Deployed HypERC20Collateral: ', hyperc20CollAddr);
-    return;
-  }
-
-  await dep.deterministicDeploy(factory, 0, [
-    address.goerli.BOB,
-    gas.DEST_GAS_AMOUNT,
-  ]);
-
-  const hyperc20Coll = factory.attach(hyperc20CollAddr);
-  console.log('HypERC20Collateral Address: ', hyperc20Coll.address, 'on');
-  const tx = await hyperc20Coll.initialize(
+  console.log('HypERC20Collateral Address: ', hyperERC20Coll.address);
+  const tx = await hyperERC20Coll.initialize(
     address.goerli.mailbox,
     address.goerli.defaultIsmInterchainGasPaymaster,
     { gasLimit: gas.GAS_LIMIT }
