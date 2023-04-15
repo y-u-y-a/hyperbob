@@ -1,8 +1,8 @@
 init:
-	yarn && docker-compose up -d && yarn hardhat deploy && yarn start
+	yarn && docker-compose up -d && yarn start
 
 reset:
-	docker-compose down && yarn && docker-compose up -d && yarn hardhat deploy && yarn start
+	docker-compose down && yarn && docker-compose up -d && yarn start
 
 log:
 	docker-compose logs -f

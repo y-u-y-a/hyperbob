@@ -1,10 +1,19 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import {
+  Box,
+  BoxProps,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
+import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, BoxProps, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from '@mui/material';
-
-import { getActiveNetwork, getSupportedNetworks } from '../../../Background/redux-slices/selectors/networkSelectors';
+import { useDispatch } from 'react-redux';
+import {
+  getActiveNetwork,
+  getSupportedNetworks,
+} from '../../../Background/redux-slices/selectors/networkSelectors';
 import { useBackgroundSelector } from '../../hooks';
 import { setActiveNetwork } from '../../../Background/redux-slices/network';
 import { Row } from '../../../../components/Row';
@@ -13,13 +22,13 @@ import { colors } from '../../../../config/const';
 
 type Props = BoxProps & {};
 
-const Header = ({ ...props }: Props) => {
+const Header: FC<Props> = ({ ...props }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const activeNetwork = useBackgroundSelector(getActiveNetwork);
   const supportedNetworks = useBackgroundSelector(getSupportedNetworks);
 
-  const changeNetwork = (e: SelectChangeEvent<string>) => {
+  const switchActiveNetwork = (e: SelectChangeEvent<string>) => {
     const payload = supportedNetworks.find((network) => {
       return network.chainID === e.target.value;
     });
@@ -45,7 +54,7 @@ const Header = ({ ...props }: Props) => {
           id="chain-selector"
           value={activeNetwork.chainID}
           label="Chain"
-          onChange={changeNetwork}
+          onChange={switchActiveNetwork}
           sx={{
             color: colors.white,
             '& label': {

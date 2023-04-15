@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import {
   BoxProps,
   CircularProgress,
@@ -16,7 +16,6 @@ import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
 import { createNewAccount } from '../../../Background/redux-slices/keyrings';
 import { getSupportedNetworks } from '../../../Background/redux-slices/selectors/networkSelectors';
 import { EVMNetwork } from '../../../Background/types/network';
-import { useNavigate } from 'react-router-dom';
 import { getAccountAdded } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { resetAccountAdded } from '../../../Background/redux-slices/account';
 import { HeadTitle } from '../../../../components/HeadTitle';
@@ -34,12 +33,12 @@ type TakeNameComponentProps = BoxProps & {
   nextStage: () => void;
 };
 
-const TakeNameComponent = ({
+const TakeNameComponent: FC<TakeNameComponentProps> = ({
   name,
   setName,
   showLoader,
   nextStage,
-}: TakeNameComponentProps) => {
+}) => {
   return (
     <>
       <HeadTitle title="Create Account" />

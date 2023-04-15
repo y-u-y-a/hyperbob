@@ -1,23 +1,19 @@
 import { Box, BoxProps, Tooltip, Typography } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { getAccountInfo } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { useBackgroundSelector } from '../../hooks';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Row } from '../../../../components/Row';
 import { BorderBox } from '../../../../components/BorderBox';
 import { colors } from '../../../../config/const';
 
-const AccountInfo = ({
-  address,
-  showOptions = true,
-  ...props
-}:BoxProps & {
+type Props = BoxProps & {
   address: string;
   showOptions: boolean;
-}) => {
-  // TODO: ツールチップを出したい
+};
+
+const AccountInfo: FC<Props> = ({ address, showOptions = true, ...props }) => {
   const [tooltipMessage, setTooltipMessage] = useState<string>('Copy address');
 
   const accountInfo = useBackgroundSelector((state) =>
@@ -26,7 +22,7 @@ const AccountInfo = ({
 
   const copyAddress = useCallback(async () => {
     await navigator.clipboard.writeText(address);
-    setTooltipMessage('Address copied');
+    setTooltipMessage('copied!');
   }, [address]);
 
   return (

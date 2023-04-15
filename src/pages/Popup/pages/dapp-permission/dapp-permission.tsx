@@ -15,7 +15,6 @@ import {
   grantPermission,
 } from '../../../Background/redux-slices/permissions';
 import AccountInfo from '../../components/account-info';
-import OriginInfo from '../../components/origin-info';
 import { BorderBox } from '../../../../components/BorderBox';
 import { RejectButton } from '../../../../components/RejectButton';
 import { Button } from '../../../../components/Button';
@@ -37,7 +36,7 @@ const DappPermission = () => {
     if (!permission && !awaitingBackgroundDispatch) navigate('/');
   }, [permission, awaitingBackgroundDispatch, navigate]);
 
-  const deny = useCallback(async () => {
+  const reject = useCallback(async () => {
     console.log('is this the problem?');
     // The denyOrRevokePermission will be dispatched in the onbeforeunload effect
     if (typeof permission !== 'undefined') {
@@ -51,7 +50,7 @@ const DappPermission = () => {
     window.close();
   }, [permission, backgroundDispatch]);
 
-  const grant = useCallback(async () => {
+  const connect = useCallback(async () => {
     if (
       typeof permission !== 'undefined' &&
       typeof activeAccount !== 'undefined'
@@ -102,9 +101,9 @@ const DappPermission = () => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <RejectButton fullWidth title="Reject" onClick={deny} />
+        <RejectButton fullWidth title="Reject" onClick={reject} />
         <Box width="32px" />
-        <Button fullWidth title="Connect" onClick={grant} />
+        <Button fullWidth title="Connect" onClick={connect} />
       </Stack>
     </Box>
   );

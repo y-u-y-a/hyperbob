@@ -1,7 +1,7 @@
 import { UserOperationStruct } from '@account-abstraction/contracts';
 import { Box, Stack, Typography } from '@mui/material';
 import { ethers } from 'ethers';
-import React, { useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import {
   AccountImplementations,
   ActiveAccountImplementation,
@@ -25,17 +25,15 @@ import {
   createUnsignedUserOp,
   rejectTransaction,
   sendTransaction,
-  setUnsignedUserOperation,
+  // setUnsignedUserOperation,
 } from '../../../Background/redux-slices/transactions';
 import { EthersTransactionRequest } from '../../../Background/services/types';
 import AccountInfo from '../../components/account-info';
-import OriginInfo from '../../components/origin-info';
-import Config from '../../../../exconfig.json';
+import Config from '../../../../exconfig';
 import { Button } from '../../../../components/Button';
 import { BorderBox } from '../../../../components/BorderBox';
 import { RejectButton } from '../../../../components/RejectButton';
 
-// NOTE: src/pages/Account/components/transaction/transaction.tsxのこと
 const SignTransactionComponent =
   AccountImplementations[ActiveAccountImplementation].Transaction;
 
@@ -50,17 +48,15 @@ type Props = {
   onSend: any;
 };
 
-const SignTransactionConfirmation = ({
+/** 送金内容の確認コンポーネント */
+const SignTransactionConfirmation: FC<Props> = ({
   activeNetwork,
   activeAccount,
   accountInfo,
-  originPermission,
   transactions,
-  userOp,
   onReject,
   onSend,
-}: Props) => {
-    // NOTE: 確認コンポーネント
+}) => {
   return (
     <Box px={2} color="white">
       <Typography
@@ -165,7 +161,6 @@ const SignTransactionRequest = () => {
       console.log({ _context });
       console.log({ context });
       if (activeAccount)
-        // NOTE: bundlerに送るユーザーオペレーションを作成している
         await backgroundDispatch(
           sendTransaction({
             address: activeAccount,
@@ -177,21 +172,15 @@ const SignTransactionRequest = () => {
     [activeAccount, backgroundDispatch, context]
   );
 
-  /**
-   * ダミーコンポーネントのCONTINUボタンの中では下記のように記述されている（/pages/Account/components/transaction/transaction.tsx）
-   * onClick={() => onComplete(transaction, undefined)}
-   * ここを実装する？
-   */
   const onComplete = useCallback(
     async (modifiedTransaction: EthersTransactionRequest, context?: any) => {
       if (activeAccount) {
-        // bundlerに送るユーザーオペレーションを作成している
+        // NOTE: bundlerに送るユーザーオペレーションを作成している
         backgroundDispatch(createUnsignedUserOp(activeAccount));
         setContext(context);
         if (Config.showTransactionConfirmationScreen === false) {
           onSend(context);
         }
-        // NOTE: 下記が画面遷移の制御をしている
         setStage('sign-transaction-confirmation');
       }
     },
@@ -204,6 +193,10 @@ const SignTransactionRequest = () => {
     window.close();
   }, [backgroundDispatch, activeAccount]);
 
+  console.log({ pendingUserOp });
+  console.log('req', sendTransactionsRequest.transactionsRequest);
+
+  // TODO: pendingUserOp=undefinedなので確認画面へ遷移できない
   if (
     stage === 'sign-transaction-confirmation' &&
     pendingUserOp &&
@@ -223,7 +216,6 @@ const SignTransactionRequest = () => {
       />
     );
 
-  // NOTE: ダミーコンポーネントを返す
   return SignTransactionComponent &&
     sendTransactionRequest.transactionRequest ? (
     <SignTransactionComponent

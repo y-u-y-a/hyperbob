@@ -1,11 +1,10 @@
 import { Center } from '../../../../components/Center';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { getActiveAccount } from '../../../Background/redux-slices/selectors/accountSelectors';
-import AccountActivity from '../../components/account-activity';
 import AccountBalanceInfo from '../../components/account-balance-info';
 import AccountInfo from '../../components/account-info';
 import Header from '../../components/header';
-import TransferAssetButton from '../../components/transfer-asset-button';
+import { HomeButtons } from '../../components/home-buttons';
 import { useBackgroundSelector } from '../../hooks';
 
 const Home = () => {
@@ -18,7 +17,7 @@ const Home = () => {
         <AccountInfo mb={2} address={activeAccount} showOptions={false} />
       )}
       <AccountBalanceInfo mb={2} address={activeAccount || ''} />
-      <TransferAssetButton activeAccount={activeAccount || ''} />
+      <HomeButtons activeAccount={activeAccount || ''} />
     </Center>
   );
 };
