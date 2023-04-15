@@ -5,7 +5,7 @@ const networks: EVMNetwork[] = [
     chainID: '5',
     family: 'EVM',
     name: 'LocalGoerli',
-    provider:  "https://eth-goerli.g.alchemy.com/v2/OfE-gJ7KkI3hx9_cKIUAIk2HhbF1xOs-",
+    provider: 'http://localhost:8545',
     entryPointAddress: '0x0576a174D229E3cFA37253523E645A78A0C91B57',
     bundler: 'http://localhost:4337',
     baseAsset: {
@@ -20,7 +20,7 @@ const networks: EVMNetwork[] = [
     chainID: '11155111',
     family: 'EVM',
     name: 'LocalSepolia',
-    provider: "https://eth-sepolia.g.alchemy.com/v2/DSGYUrB8au5GBFjwXI8IeeGwdvQgZX1O",
+    provider: 'http://localhost:9545',
     entryPointAddress: '0x0576a174D229E3cFA37253523E645A78A0C91B57',
     bundler: 'http://localhost:5337',
     baseAsset: {

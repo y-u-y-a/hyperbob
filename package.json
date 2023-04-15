@@ -1,7 +1,7 @@
 {
-  "name": "chrome-extension-boilerplate-react",
+  "name": "hyper-bob",
   "version": "5.0.4",
-  "description": "HyperBOB",
+  "description": "HyperBOB", 
   "license": "MIT",
   "repository": {
     "type": "git",
