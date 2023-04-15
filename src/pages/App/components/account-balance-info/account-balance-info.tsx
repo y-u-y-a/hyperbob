@@ -1,5 +1,5 @@
 import { Typography, Chip, Tooltip, BoxProps } from '@mui/material';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
 import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
@@ -13,12 +13,20 @@ import {
   getAccountData,
 } from '../../../Background/redux-slices/account';
 import { getAccountEVMData } from '../../../Background/redux-slices/selectors/accountSelectors';
+import { ethers } from 'ethers';
+import {
+  IERC20__factory,
+} from '../../../Account/account-api/typechain-types'
 
 type Props = BoxProps & {
   address: string;
 };
 
+const GoerliUSDCAddr = '0x07865c6e87b9f70255377e024ace6630c1eaa37f';
+
 const AccountBalanceInfo = ({ address, ...props }: BoxProps & {address: any}) => {
+  const [usdcBalance, setUsdcBalance] = useState('');
+
   const navigate = useNavigate();
   const activeNetwork = useBackgroundSelector(getActiveNetwork);
   const accountData: AccountData | 'loading' = useBackgroundSelector((state) =>
@@ -34,7 +42,14 @@ const AccountBalanceInfo = ({ address, ...props }: BoxProps & {address: any}) =>
 
   useEffect(() => {
     backgroundDispatch(getAccountData(address));
-  }, [backgroundDispatch, address]);
+
+    const provider = new ethers.providers.JsonRpcProvider(activeNetwork.provider);
+    const contract = IERC20__factory.connect(GoerliUSDCAddr, provider)
+    contract.balanceOf(address).then((balance) => {
+      const normalizedBalance = balance.div(10**6)
+      setUsdcBalance(normalizedBalance.toString())
+    })
+  }, [backgroundDispatch, activeNetwork, address]);
 
   if (!activeNetwork) {
     return <></>;
@@ -79,6 +94,27 @@ const AccountBalanceInfo = ({ address, ...props }: BoxProps & {address: any}) =>
         />
       </Tooltip>
       {/* ETH */}
+      {accountData !== 'loading' &&
+        accountData.balances &&
+        accountData.balances[activeNetwork.baseAsset.symbol] && (
+          <Row>
+            <Typography
+              marginY={0}
+              marginRight={1}
+              fontSize="42px"
+              fontWeight="bold"
+              variant="h6"
+              noWrap
+            >
+              {
+                usdcBalance
+              }
+            </Typography>
+            <Typography marginY={0} fontSize="36px" variant="h6">
+              {"USDC"}
+            </Typography>
+          </Row>
+        )}
       {accountData !== 'loading' &&
         accountData.balances &&
         accountData.balances[activeNetwork.baseAsset.symbol] && (
