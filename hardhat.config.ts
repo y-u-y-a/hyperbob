@@ -40,7 +40,7 @@ const config: HardhatUserConfig = {
     //   },
     // },
   },
-  defaultNetwork: 'LocalGoerli',
+  defaultNetwork: 'Goerli',
   solidity: {
     compilers: [{ version: '0.8.12', settings: {} }, { version: '0.5.0' }],
   },
