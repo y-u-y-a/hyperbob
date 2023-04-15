@@ -29,6 +29,8 @@ async function main() {
   );
   const recepit = await tx.wait();
   console.log('tx hash for initialize(): ', recepit.transactionHash);
+
+  address.goerli.hypERCCollateral = hyperERC20Coll.address;
 }
 
 main().catch((error) => {
