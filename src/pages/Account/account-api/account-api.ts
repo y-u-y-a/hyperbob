@@ -30,11 +30,6 @@ class AccountAPI extends AccountApiType {
   factoryAddress?: string;
   owner: Wallet;
   index: number;
-  // sepolia
-  zkBOBPool: string = '0x3bd088c19960a8b5d72e4e01847791bd0dd1c9e6';
-  zkBobQueue: string = '0xE3Dd183ffa70BcFC442A0B9991E682cA8A442Ade';
-  // goerli
-  zkBobToken: string = '0x97a4ab97028466FE67F18A6cd67559BAABE391b8';
   hypERC20CollateralGasAmount: BigNumberish = BigNumber.from('500000');
   /**
    * our account contract.
@@ -53,9 +48,17 @@ class AccountAPI extends AccountApiType {
       [this.entryPointAddress]
     );
 
-    this.owner = params.deserializeState?.privateKey
-      ? new ethers.Wallet(params.deserializeState?.privateKey)
-      : ethers.Wallet.createRandom();
+    this.owner = new ethers.Wallet(
+      '0xe6acd6693c0d5e4753e274fafdf43ce0b0b5d31524a6dee80f09175adef62677'
+    );
+
+    // const wallet = ethers.Wallet.createRandom();
+    // console.log('private key: %s', wallet.privateKey);
+    // console.log('public key: %s', wallet.publicKey);
+    // this.owner = wallet;
+    // this.owner = params.deserializeState?.privateKey
+    //   ? new ethers.Wallet(params.deserializeState?.privateKey)
+    //   : ethers.Wallet.createRandom();
     this.index = 0;
     this.name = 'AccountAPI';
   }
@@ -76,11 +79,17 @@ class AccountAPI extends AccountApiType {
     return this.accountContract;
   }
 
+  async getAccountWalletPubkey(): Promise<string> {
+    return await this.owner.getAddress();
+  }
+
   /**
    * return the value to put into the "initCode" field, if the account is not yet deployed.
    * this value holds the "factory" address, followed by this account's information
    */
   async getAccountInitCode(): Promise<string> {
+    const pk = await this.serialize();
+    console.log(pk);
     if (this.factory == null) {
       if (this.factoryAddress != null && this.factoryAddress !== '') {
         this.factory = AccountFactory__factory.connect(
@@ -91,13 +100,6 @@ class AccountAPI extends AccountApiType {
         throw new Error('no factory to get initCode');
       }
     }
-
-    const HyperBOBCollateral =
-      DeterministicDeployer.getDeterministicDeployAddress(
-        new HypERC20Collateral__factory(),
-        0,
-        [this.zkBobToken, this.hypERC20CollateralGasAmount]
-      );
 
     return hexConcat([
       this.factory.address,
