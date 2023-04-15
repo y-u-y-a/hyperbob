@@ -11,9 +11,9 @@ export const address = {
     BOB: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
     // hyperBOB
     accountImp: '0xeb3d8191d134B40fF093eB9FA56adEdE3389d6a6',
-    accountFactory: '0xE8D3AF8dE4B0a7Cdaf73B041dE0166B505DABcb3',
+    accountFactory: '0x38548FaEBfd61D8Ce066380484841735c68880ea',
     // old: 0x95751b91b1d34537cd8a208d9b39093538d9d510
-    hypERCCollateral: '0xCc997E02991b8Ac033296a03117e55Ac4E6C32C9',
+    hypERCCollateral: '0x1ECB226C20978B81f21041D71Eebc15Db8D2D7C3',
 
     // Uniswap
     router: '0x4648a43B2C14Da09FdF82B161150d3F634f40491',
@@ -31,8 +31,8 @@ export const address = {
 
     // hyperBOB
     accountImp: '0x3e809ab2E61A6734Fea18E3F781a7c4b87c8291E',
-    accountFactory: '0x95ba6f70a1F8ac82ED20714635052656c9F44FfA',
-    hypERC: '0xfB1C4Ad3af37084c0419bC6E76d7e6b0cf389339',
+    accountFactory: '0xEf5624D20B5c424b8eE18F1DA38C265faf018B52',
+    hypERC: '0x79439b04066E15715A4e9D2c926EA02B01a00435',
   },
   common: {
     entryPoint: '0x0576a174D229E3cFA37253523E645A78A0C91B57',
