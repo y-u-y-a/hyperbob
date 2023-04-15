@@ -16,6 +16,7 @@ import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { getActiveNetwork } from '../Background/redux-slices/selectors/networkSelectors';
 import Config from '../../exconfig.json';
+import { Box } from '@mui/material';
 console.debug('---- LAUNCHING WITH CONFIG ----', Config);
 
 const Popup = () => {
@@ -92,13 +93,21 @@ const Popup = () => {
             </ProtectedRouteHasAccounts>
           }
         />
-
         <Route
           path="/sign-transaction"
           element={
             <ProtectedRouteHasAccounts>
               <SignTransactionRequest />
             </ProtectedRouteHasAccounts>
+          }
+        />
+        {/* NOTE: トランザクション送信後の完了画面 */}
+        <Route
+          path="/complete"
+          element={
+            <Box marginY={4} fontSize={18} fontWeight="bold" textAlign="center">
+              Completed！トランザクション送信後の完了画面
+            </Box>
           }
         />
       </Routes>

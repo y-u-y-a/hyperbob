@@ -18,6 +18,7 @@ import { DomainName, URI } from '../types/common';
 import { EVMNetwork } from '../types/network';
 import { EthersTransactionRequest } from './types';
 import { UserOperationStruct } from '@account-abstraction/contracts';
+import { TransactionDetailsForUserOp } from '@account-abstraction/sdk/dist/src/TransactionDetailsForUserOp';
 
 interface Events extends ServiceLifecycleEvents {
   createPassword: string;
@@ -376,6 +377,43 @@ export default class KeyringService extends BaseService<Events> {
       maxFeePerGas: transaction.maxFeePerGas,
       maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
     });
+
+    userOp.sender = await userOp.sender;
+    userOp.nonce = await userOp.nonce;
+    userOp.initCode = await userOp.initCode;
+    userOp.callData = await userOp.callData;
+    userOp.callGasLimit = await userOp.callGasLimit;
+    userOp.verificationGasLimit = await userOp.verificationGasLimit;
+    userOp.preVerificationGas = await userOp.preVerificationGas;
+    userOp.maxFeePerGas = await userOp.maxFeePerGas;
+    userOp.maxPriorityFeePerGas = await userOp.maxPriorityFeePerGas;
+    userOp.paymasterAndData = await userOp.paymasterAndData;
+    userOp.signature = await userOp.signature;
+
+    return userOp;
+  };
+
+  createUnsignedUserOpWithBatch = async (
+    address: string,
+    requests: EthersTransactionRequest[]
+  ): Promise<UserOperationStruct> => {
+    const keyring = this.keyrings[address];
+    const txs: TransactionDetailsForUserOp[] = [];
+
+    for (var i = 0; i < requests.length; i++) {
+      txs.push({
+        target: requests[i].to,
+        data: requests[i].data
+          ? ethers.utils.hexConcat([requests[i].data])
+          : '0x',
+        value: requests[i].value,
+        gasLimit: requests[i].gasLimit,
+        maxFeePerGas: requests[i].maxFeePerGas,
+        maxPriorityFeePerGas: requests[i].maxPriorityFeePerGas,
+      });
+    }
+
+    const userOp = await keyring.createUnsignedUserOpBatch(txs);
 
     userOp.sender = await userOp.sender;
     userOp.nonce = await userOp.nonce;

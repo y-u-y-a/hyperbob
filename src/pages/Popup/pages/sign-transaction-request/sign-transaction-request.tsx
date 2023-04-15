@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import React, { useCallback, useState } from 'react';
 import {
   AccountImplementations,
@@ -40,6 +40,7 @@ import AccountInfo from '../../components/account-info';
 import OriginInfo from '../../components/origin-info';
 import Config from '../../../../exconfig.json';
 
+// NOTE: src/pages/Account/components/transaction/transaction.tsxのこと
 const SignTransactionComponent =
   AccountImplementations[ActiveAccountImplementation].Transaction;
 
@@ -96,6 +97,7 @@ const SignTransactionConfirmation = ({
     }
   }, [activeNetwork.chainID, backgroundDispatch, paymasterUrl, userOp]);
 
+  // NOTE: 確認コンポーネント
   return (
     <Container>
       <Box sx={{ p: 2 }}>
@@ -226,6 +228,7 @@ const SignTransactionConfirmation = ({
             <Button sx={{ width: 150 }} variant="outlined" onClick={onReject}>
               Reject
             </Button>
+            {/* NOTE: SEND発火ボタン */}
             <Button
               sx={{ width: 150 }}
               variant="contained"
@@ -283,14 +286,21 @@ const SignTransactionRequest = () => {
     [activeAccount, backgroundDispatch, context]
   );
 
+  /**
+   * ダミーコンポーネントのCONTINUボタンの中では下記のように記述されている（/pages/Account/components/transaction/transaction.tsx）
+   * onClick={() => onComplete(transaction, undefined)}
+   * ここを実装する？
+   */
   const onComplete = useCallback(
     async (modifiedTransaction: EthersTransactionRequest, context?: any) => {
       if (activeAccount) {
+        // bundlerに送るユーザーオペレーションを作成している
         backgroundDispatch(createUnsignedUserOp(activeAccount));
         setContext(context);
         if (Config.showTransactionConfirmationScreen === false) {
           onSend(context);
         }
+        // NOTE: 下記が画面遷移の制御をしている
         setStage('sign-transaction-confirmation');
       }
     },
@@ -321,6 +331,7 @@ const SignTransactionRequest = () => {
       />
     );
 
+  // NOTE: ダミーコンポーネントを返す
   return SignTransactionComponent &&
     sendTransactionRequest.transactionRequest ? (
     <SignTransactionComponent

@@ -1,0 +1,5 @@
+export const gas = {
+  GAS_LIMIT: 1500000,
+  GAS_AMOUNT: 500000,
+  DEST_GAS_AMOUNT: 1000000,
+};

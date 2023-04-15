@@ -1,27 +1,27 @@
-import {
-  Box,
-  Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from '@mui/material';
 import React from 'react';
-import logo from '../../../../assets/img/logo.svg';
-import {
-  getActiveNetwork,
-  getSupportedNetworks,
-} from '../../../Background/redux-slices/selectors/networkSelectors';
-import { useBackgroundSelector } from '../../hooks';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from '@mui/material';
+
+import { getActiveNetwork, getSupportedNetworks } from '../../../Background/redux-slices/selectors/networkSelectors';
+import { useBackgroundSelector } from '../../hooks';
+import { setActiveNetwork } from '../../../Background/redux-slices/network';
+import logo from '../../../../assets/img/logo.svg';
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const activeNetwork = useBackgroundSelector(getActiveNetwork);
   const supportedNetworks = useBackgroundSelector(getSupportedNetworks);
+
+  const changeNetwork = (e: SelectChangeEvent<string>) => {
+    const payload = supportedNetworks.find((network) => {
+      return network.chainID === e.target.value;
+    });
+    if (!payload) return;
+    dispatch(setActiveNetwork(payload));
+  };
 
   return (
     <Box
@@ -30,40 +30,16 @@ const Header = () => {
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
-      sx={{
-        mr: 4,
-        ml: 4,
-        mt: 2,
-        mb: 2,
-        height: 60,
-      }}
+      sx={{ mr: 4, ml: 4, mt: 2, mb: 2, height: 60 }}
     >
-      <Stack
-        direction="row"
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-        sx={{ cursor: 'pointer' }}
-        onClick={() => navigate('/')}
-      >
+      <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" sx={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
         <img height={30} src={logo} className="App-logo" alt="logo" />
         <Typography variant="h6">TRAMPOLINE</Typography>
       </Stack>
-      <Stack
-        direction="row"
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
         <FormControl sx={{ minWidth: 80 }}>
-          <InputLabel id="chain-selector">Chain</InputLabel>
-          <Select
-            labelId="chain-selector"
-            id="chain-selector"
-            value={activeNetwork.chainID}
-            label="Chain"
-            // onChange={handleChange}
-          >
+          <InputLabel id="chain-selector" children="Chain" />
+          <Select labelId="chain-selector" id="chain-selector" value={activeNetwork.chainID} label="Chain" onChange={changeNetwork}>
             {supportedNetworks.map((network) => (
               <MenuItem key={network.chainID} value={network.chainID}>
                 {network.name}

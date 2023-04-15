@@ -181,6 +181,8 @@ The signature of the `signMessage` is as follows, which shows how the `context` 
   ) => Promise<string>;
 ```
 
+<!-- NOTE: onCompleteとかについて、context, transactionとか -->
+
 The `transaction` folder defines the component that will be displayed to the user whenever the dapp requests to initiate a transaction, i.e. dapp calls `eth_sendTransaction` RPC method. You can display custom information or collect user inputs if needed.
 
 The signature of the `TransactionComponent` is defined as follows.

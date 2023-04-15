@@ -141,6 +141,9 @@ const transactionsSlice = createSlice<
   },
 });
 
+/**
+ * NOTE: stateの保存・更新処理
+ */
 export const {
   sendTransactionRequest,
   sendTransactionsRequest,
@@ -167,12 +170,15 @@ export const sendTransaction = createBackgroundAsyncThunk(
     const origin = state.transactions.requestOrigin;
 
     if (unsignedUserOp) {
+      console.log('request signUserOpWithContext');
       const signedUserOp = await keyringService.signUserOpWithContext(
         address,
         unsignedUserOp,
         context
       );
+      console.log('signedUserOp: %s', JSON.stringify(signedUserOp));
       const txnHash = keyringService.sendUserOp(address, signedUserOp);
+      console.log('txnHash: %s', txnHash);
 
       const providerBridgeService = mainServiceManager.getService(
         ProviderBridgeService.name
@@ -198,6 +204,29 @@ export const createUnsignedUserOp = createBackgroundAsyncThunk(
         address,
         transactionRequest
       );
+      dispatch(setUnsignedUserOperation(userOp));
+    }
+  }
+);
+
+export const createUnsignedUserOpBatch = createBackgroundAsyncThunk(
+  'transactions/createUnsignedUserOpBatch',
+  async (address: string, { dispatch, extra: { mainServiceManager } }) => {
+    const keyringService = mainServiceManager.getService(
+      KeyringService.name
+    ) as KeyringService;
+
+    const state = mainServiceManager.store.getState() as RootState;
+    const transactionsRequest = state.transactions.transactionsRequest;
+
+    if (transactionsRequest) {
+      const userOp = await keyringService.createUnsignedUserOpWithBatch(
+        address,
+        transactionsRequest
+      );
+      console.log('1');
+      console.log('userOp: ', JSON.stringify(userOp));
+      console.log('2');
       dispatch(setUnsignedUserOperation(userOp));
     }
   }
