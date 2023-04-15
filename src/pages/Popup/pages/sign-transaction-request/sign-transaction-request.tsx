@@ -169,7 +169,7 @@ const SignTransactionRequest = () => {
         await backgroundDispatch(
           sendTransaction({
             address: activeAccount,
-            context: JSON.parse(JSON.stringify(_context)) || context,
+            context: _context || context,
           })
         );
       window.close();
@@ -208,8 +208,8 @@ const SignTransactionRequest = () => {
   if (
     stage === 'sign-transaction-confirmation' &&
     pendingUserOp &&
-    sendTransactionsRequest.transactionsRequest
-    // sendTransactionRequest.transactionRequest
+    // sendTransactionsRequest.transactionsRequest
+    sendTransactionRequest.transactionRequest
   )
     return (
       <SignTransactionConfirmation
@@ -219,7 +219,7 @@ const SignTransactionRequest = () => {
         originPermission={originPermission}
         onReject={onReject}
         onSend={onSend}
-        transactions={sendTransactionsRequest.transactionsRequest || []}
+        transactions={[sendTransactionRequest.transactionRequest]}
         userOp={pendingUserOp}
       />
     );
