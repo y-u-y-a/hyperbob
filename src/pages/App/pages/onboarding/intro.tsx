@@ -14,8 +14,8 @@ const Intro = () => {
       <BorderBox>
         <img height={36} src={logo} className="App-logo" alt="logo" />
         <HeadTitle marginTop="20px" marginBottom="96px">
-          Beautifully friendly <br />
-          crypto wallet.
+          Private transfer for <br />
+          everyone with AA.
         </HeadTitle>
         <Button
           sx={{ marginRight: 'auto' }}
