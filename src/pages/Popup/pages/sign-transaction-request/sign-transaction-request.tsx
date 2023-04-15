@@ -172,6 +172,7 @@ const SignTransactionRequest = () => {
     [activeAccount, backgroundDispatch, context]
   );
 
+  // TODO: ここでUserOPが作成されているか確認する
   const onComplete = useCallback(
     async (modifiedTransaction: EthersTransactionRequest, context?: any) => {
       if (activeAccount) {
