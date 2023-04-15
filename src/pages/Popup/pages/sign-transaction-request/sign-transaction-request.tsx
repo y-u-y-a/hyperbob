@@ -31,6 +31,7 @@ import {
 } from '../../../Background/redux-slices/selectors/transactionsSelectors';
 import {
   createUnsignedUserOp,
+  createUnsignedUserOpBatch,
   rejectTransaction,
   sendTransaction,
   setUnsignedUserOperation,
@@ -295,7 +296,7 @@ const SignTransactionRequest = () => {
     async (modifiedTransaction: EthersTransactionRequest, context?: any) => {
       if (activeAccount) {
         // bundlerに送るユーザーオペレーションを作成している
-        backgroundDispatch(createUnsignedUserOp(activeAccount));
+        backgroundDispatch(createUnsignedUserOpBatch(activeAccount));
         setContext(context);
         if (Config.showTransactionConfirmationScreen === false) {
           onSend(context);
