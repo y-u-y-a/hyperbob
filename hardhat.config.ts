@@ -21,24 +21,9 @@ exconfigJson.networks.map(({ name, provider }) => {
   return (networks[name].url = provider);
 });
 
-// const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`;
-// let mnemonic = 'test '.repeat(11) + 'junk';
-// if (fs.existsSync(mnemonicFileName)) {
-//   mnemonic = fs.readFileSync(mnemonicFileName, 'ascii');
-// }
-
 const config: HardhatUserConfig = {
   networks: {
     ...networks,
-    // goerli: {
-    //   url: 'https://eth-goerli.g.alchemy.com/v2/-GlnUSi8Q2ADFXvSTgCvIHMEo8sbb0s6',
-    //   // accounts: accounts,
-    // },
-    // hardhat: {
-    //   forking: {
-    //     url: 'https://eth-goerli.g.alchemy.com/v2/-GlnUSi8Q2ADFXvSTgCvIHMEo8sbb0s6',
-    //   },
-    // },
   },
   defaultNetwork: 'Goerli',
   solidity: {
