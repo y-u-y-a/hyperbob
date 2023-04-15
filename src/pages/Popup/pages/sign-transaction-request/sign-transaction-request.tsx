@@ -170,7 +170,7 @@ const SignTransactionRequest = () => {
         await backgroundDispatch(
           sendTransaction({
             address: activeAccount,
-            context: _context || context,
+            context: context,
           })
         );
       window.close();
@@ -188,8 +188,7 @@ const SignTransactionRequest = () => {
     async (modifiedTransaction: EthersTransactionRequest, context?: any) => {
       if (activeAccount) {
         // bundlerに送るユーザーオペレーションを作成している
-        backgroundDispatch(createUnsignedUserOpBatch(activeAccount));
-        setContext(context);
+        backgroundDispatch(createUnsignedUserOp(activeAccount));
         if (Config.showTransactionConfirmationScreen === false) {
           onSend(context);
         }
