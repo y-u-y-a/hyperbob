@@ -165,14 +165,22 @@ const SignTransactionRequest = () => {
       console.log({ activeAccount });
       console.log({ _context });
       console.log({ context });
-      if (activeAccount)
+      if (activeAccount) {
         // NOTE: bundlerに送るユーザーオペレーションを作成している
-        await backgroundDispatch(
-          sendTransaction({
-            address: activeAccount,
-            context: context,
-          })
-        );
+        try {
+          await backgroundDispatch(
+            sendTransaction({
+              address: activeAccount,
+              context: context,
+            })
+          );
+        } catch (e) {
+          window.alert(e)
+        }
+      }
+      window.alert('sent transaction')
+      console.log('sent tx done')
+
       window.close();
     },
     [activeAccount, backgroundDispatch, context]

@@ -1,5 +1,15 @@
-import { Box, Button, Input, Stack } from '@mui/material';
+import { Box, Input, Stack } from '@mui/material';
 import React, { FC, useState } from 'react';
+
+import { BoxProps, FormControl, FormGroup, Typography } from '@mui/material';
+import { BorderBox } from '../../../../components/BorderBox';
+import { Center } from '../../../../components/Center';
+import { FormInput } from '../../../../components/FormInput';
+import { HeadTitle } from '../../../../components/HeadTitle';
+import Header from '../../../App/components/header';
+import { colors } from '../../../../config/const';
+import { Button } from '../../../../components/Button';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 import { TransactionComponentProps as Props } from '../types';
 import {
@@ -226,41 +236,52 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center">
-      <h3 style={{ margin: '20px auto', fontSize: '20px', fontWeight: 'bold' }}>
-        Enter a destination address
-      </h3>
-      <Box marginBottom="20px">
-        <Stack spacing={2} style={{ width: '80%', margin: '0 auto 20px' }}>
-          <Input
-            value={gkAddress}
-            name="gk_address"
-            placeholder="gk_addressを入力してください"
-            onChange={(e) => setGkAddress(e.target.value)}
-            sx={{ paddingLeft: '10px', paddingRight: '10px' }}
+    <Center
+      minHeight="100vh"
+      height="100%"
+      width="60%"
+      marginX="auto"
+      // {...props}
+    >
+      <Header mb={2} />
+      <BorderBox>
+        <HeadTitle title="Transfer ETH" />
+        <Typography marginBottom={4} width="100%" variant="body1" color="white">
+          Please Enter below.
+        </Typography>
+        <FormGroup sx={{ width: '100%' }}>
+          {/* zkAddress */}
+          <FormControl sx={{ mb: 2 }} fullWidth variant="outlined">
+            <FormInput
+              value={gkAddress}
+              onChange={(e) => setGkAddress(e.target.value)}
+              placeholder="ZK Address"
+            />
+          </FormControl>
+          {/* USDC */}
+          <FormControl fullWidth variant="outlined">
+            <FormInput
+              value={val}
+              onChange={(e) => setVal(e.target.value)}
+              placeholder="USDC"
+            />
+          </FormControl>
+          <Button
+            sx={{ marginLeft: 'auto', marginTop: 8 }}
+            title="Confirm"
+            onClick={changeTransaction}
+            disabled={!gkAddress || !val}
+            icon={
+              <SendRoundedIcon
+                sx={{
+                  color: !gkAddress || !val ? colors.disabled : colors.white,
+                }}
+              />
+            }
           />
-          <Input
-            value={tokenAddress}
-            name="token_address"
-            placeholder="token_addressを入力してください"
-            onChange={(e) => setTokenAddress(e.target.value)}
-            sx={{ paddingLeft: '10px', paddingRight: '10px' }}
-          />
-          <Input
-            value={val}
-            name="value"
-            placeholder="valueを入力してください"
-            onChange={(e) => setVal(e.target.value)}
-            sx={{ paddingLeft: '10px', paddingRight: '10px' }}
-          />
-        </Stack>
-        <Box display="flex" justifyContent="center">
-          <Button size="large" variant="contained" onClick={changeTransaction}>
-            Continue
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+        </FormGroup>
+      </BorderBox>
+    </Center>
   );
 };
 
