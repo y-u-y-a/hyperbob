@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity >=0.8.0;
 
-import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
-import {Address} from "@openzeppelin/contracts/utils/Address.sol";
-import {TokenRouter} from "@hyperlane-xyz/hyperlane-token/contracts/libs/TokenRouter.sol";
-import {ERC777, Context, IERC20} from "@openzeppelin/contracts/token/ERC777/ERC777.sol";
-import {IAccountFactory} from "../account/interfaces/IAccountFactory.sol";
+import {ContextUpgradeable} from '@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol';
+import {Address} from '@openzeppelin/contracts/utils/Address.sol';
+import {TokenRouter} from '@hyperlane-xyz/hyperlane-token/contracts/libs/TokenRouter.sol';
+import {ERC777, Context, IERC20} from '@openzeppelin/contracts/token/ERC777/ERC777.sol';
+import {IAccountFactory} from '../account/interfaces/IAccountFactory.sol';
+import {IAccount} from '../account/interfaces/IAccount.sol';
 
 /**
  * @title Hyperlane ERC20 Token Router that extends ERC20 with remote transfer functionality.
@@ -44,8 +45,8 @@ contract HypERC20 is TokenRouter, ERC777 {
     function _transferFromSender(
         uint256 _amount
     ) internal override returns (bytes memory) {
-        _burn(msg.sender, _amount, bytes(""), bytes(""));
-        return bytes(""); // no metadata
+        _burn(msg.sender, _amount, bytes(''), bytes(''));
+        return bytes(''); // no metadata
     }
 
     // can't override handle() so modify this method entirely.
@@ -58,34 +59,43 @@ contract HypERC20 is TokenRouter, ERC777 {
 
         // deploy Account if it's not deployed.
         if (!Address.isContract(_recipient)) {
-            (bytes memory _zkAddress, address owner) = abi.decode(
-                _calldata,
-                (bytes, address)
-            );
-
-            address calculatedAccAddr = accountFactory.getAddress(owner, 0);
-            require(calculatedAccAddr == _recipient, "INVALID_ACCOUNT_ADDRESS");
-
-            accountFactory.createAccount(owner, 0);
-            zkAddress = _zkAddress;
+            zkAddress = _deployAccount(_recipient, _calldata);
         } else {
             zkAddress = _calldata;
         }
 
-        _mint(_recipient, _amount, zkAddress, bytes(""));
+        _mint(_recipient, _amount, zkAddress, bytes(''));
+    }
+
+    function _deployAccount(
+        address _recipient,
+        bytes calldata _calldata
+    ) internal returns (bytes memory) {
+        (bytes memory zkAddress, address owner) = abi.decode(
+            _calldata,
+            (bytes, address)
+        );
+
+        address calculatedAccAddr = accountFactory.getAddress(owner, 0);
+        require(calculatedAccAddr == _recipient, 'INVALID_ACCOUNT_ADDRESS');
+
+        accountFactory.createAccount(owner, 0);
+        IAccount(calculatedAccAddr).initializePrivateTransfer();
+
+        return zkAddress;
     }
 
     function convertToCanonicalToken(address _receiver, uint _amount) external {
         require(
             balanceOf(msg.sender) >= _amount,
-            "INSUFFICIENT_HYPBOB_BALANCE"
+            'INSUFFICIENT_HYPBOB_BALANCE'
         );
         require(
             IERC20(canonicalToken).balanceOf(address(this)) >= _amount,
-            "INSUFFICIENT_BOB_BALANCE"
+            'INSUFFICIENT_BOB_BALANCE'
         );
         IERC20(canonicalToken).transfer(_receiver, _amount);
-        _burn(_receiver, _amount, bytes(""), bytes(""));
+        _burn(_receiver, _amount, bytes(''), bytes(''));
     }
 
     function _msgSender()
