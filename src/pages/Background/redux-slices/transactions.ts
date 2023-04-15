@@ -170,11 +170,13 @@ export const sendTransaction = createBackgroundAsyncThunk(
     const origin = state.transactions.requestOrigin;
 
     if (unsignedUserOp) {
+      console.log('request signUserOpWithContext');
       const signedUserOp = await keyringService.signUserOpWithContext(
         address,
         unsignedUserOp,
         context
       );
+      console.log('signedUserOp: %s', JSON.stringify(signedUserOp));
       const txnHash = keyringService.sendUserOp(address, signedUserOp);
 
       const providerBridgeService = mainServiceManager.getService(
@@ -221,7 +223,9 @@ export const createUnsignedUserOpBatch = createBackgroundAsyncThunk(
         address,
         transactionsRequest
       );
+      console.log('1');
       console.log('userOp: ', JSON.stringify(userOp));
+      console.log('2');
       dispatch(setUnsignedUserOperation(userOp));
     }
   }

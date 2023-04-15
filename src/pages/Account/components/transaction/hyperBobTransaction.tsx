@@ -11,7 +11,7 @@ import {
   sendTransactionsRequest,
   setModifyTransactionsRequest
 } from '../../../Background/redux-slices/transactions';
-import { Contract, ContractFactory, Wallet, ethers } from 'ethers';
+import { BigNumber, Contract, ContractFactory, Wallet, ethers } from 'ethers';
 import {
   DeterministicDeployer,
   SimpleAccountAPI,
@@ -56,6 +56,7 @@ import {
   computePoolAddress,
   Trade,
 } from '@uniswap/v3-sdk';
+import SwapRouterABI from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json';
 
 import JSBI from 'jsbi';
 import {
@@ -76,12 +77,13 @@ interface PoolInfo {
   tick: number;
 }
 
-const destChainID = 11155111;
+const destChainID = '11155111';
 const QuoterAddr = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6';
 const PoolFactroyAddr = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
 const GoerliUSDCAddr = '0x07865c6e87b9f70255377e024ace6630c1eaa37f';
 const GoerliBOBAddr = '0x97a4ab97028466FE67F18A6cd67559BAABE391b8';
 const SwapRouterAddr = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
+const HypERC20CollAddr = '0x1ECB226C20978B81f21041D71Eebc15Db8D2D7C3';
 // const HypERC20CollAddr = "0xd06532148869ba2fdb1af29c79ba79002a833be0"
 // NOTE: This is Costomize component
 export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
@@ -102,62 +104,121 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
     const pubkey = '0xa321ff522233D0486F00370a15705F0406B641D4';
     // const transactions: EthersTransactionRequest[] = [];
 
-    const chainID = parseInt(activeNetwork.chainID);
     const account = Account__factory.connect(activeAccount, provider);
-
-    const init: boolean = false;
-
-    const amountIn = ethers.utils.parseUnits(val, 6);
-
-    let tx: EthersTransactionRequest;
-    if (init) {
-      const initPopTx =
+    const initPopTx =
       await account.populateTransaction.initializePrivateTransfer();
-
-       console.log('initPopTx: %s', initPopTx);
-
-       tx = {
+    const initTx: EthersTransactionRequest = {
       ...initPopTx,
       from: activeAccount,
     };
+    transactions.push(initTx);
 
-    } else {
-      const a = [gkAddress];
-      console.log('pubkey %s', pubkey);
-  
-        a.push(pubkey);
-  
-      const abiCorder = new ethers.utils.AbiCoder();
-      const callData = abiCorder.encode(
-        ['bytes', 'address'],
-        [ethers.utils.toUtf8Bytes(gkAddress), pubkey]
+    const amountIn = ethers.utils.parseUnits(val, 6);
+    const quoter = new Contract(QuoterAddr, QuoterABI.abi, provider);
+    const quotedAmountOut = await quoter.callStatic.quoteExactInputSingle(
+      GoerliUSDCAddr,
+      GoerliBOBAddr,
+      FeeAmount.LOW,
+      amountIn,
+      0
+    );
+    console.log('amountin: %s', amountIn);
+    console.log('val: %s', val);
+    console.log('quotedAmountOut: %s', quotedAmountOut);
+
+    const bobTokenContract = new Contract(
+      GoerliBOBAddr,
+      ERC20ABI.abi,
+      provider
+    );
+    const approvePop = await bobTokenContract.populateTransaction.approve(
+      SwapRouterAddr,
+      amountIn
+    );
+    const approveTx: EthersTransactionRequest = {
+      ...approvePop,
+      from: activeAccount,
+    };
+    transactions.push(approveTx);
+
+    const router = new Contract(SwapRouterAddr, SwapRouterABI.abi, provider);
+    const exactInputSingleParams = {
+      tokenIn: GoerliUSDCAddr,
+      tokenOut: GoerliBOBAddr,
+      fee: FeeAmount.LOW,
+      recipient: activeAccount,
+      deadline: Math.floor(Date.now() / 1000) + 60 * 20,
+      amountIn: amountIn,
+      amountOutMinimum: BigNumber.from('0'),
+      sqrtPriceLimitX96: 0,
+    };
+    console.log(
+      'exactInputSingleParams: ',
+      JSON.stringify(exactInputSingleParams)
+    );
+    let tradeTx = await router.populateTransaction.exactInputSingle(
+      exactInputSingleParams
+    );
+
+    tradeTx = {
+      ...tradeTx,
+      from: activeAccount,
+      gasLimit: 10000000,
+    };
+
+    console.log('tradeTx: ', JSON.stringify(tradeTx));
+    transactions.push(tradeTx);
+
+    const approveHypERC20CollPop =
+      await bobTokenContract.populateTransaction.approve(
+        HypERC20CollAddr,
+        quotedAmountOut + 10 ** 18 * 100
       );
-  
-      console.log("amountIn: ", amountIn)
-  
-      const PopTx =
-      await account.populateTransaction.bridgBOB(
-        destChainID,
-        utils.addressToBytes32(activeAccount as string),
-        amountIn,
-        GoerliUSDCAddr,
-        callData,
-        ethers.utils.parseEther("0.02")
-      );
-  
-    console.log('PopTx: %s', PopTx);
-  
-     tx = {
-       ...PopTx,
-       from: activeAccount,
-       gasLimit: gas.GAS_LIMIT
-      };
+    // gasLimit: 10000000,
+    const approveHypERC20CollTx: EthersTransactionRequest = {
+      ...approveHypERC20CollPop,
+      from: activeAccount,
+    };
+
+    transactions.push(approveHypERC20CollTx);
+
+    const values = [ethers.utils.toUtf8Bytes(gkAddress)];
+    const types = ['bytes'];
+
+    if ((await provider.getCode(activeAccount)) === '0x') {
+      types.push('address');
+      values.push(pubkey);
     }
 
-    const res = await backgroundDispatch(
-      await sendTransactionRequest({
-        transactionRequest: tx,
-        origin: ''
+    const abiCorder = new ethers.utils.AbiCoder();
+    const callData = abiCorder.encode(types, values);
+    const hypERC20Coll = HypERC20Collateral__factory.connect(
+      HypERC20CollAddr,
+      provider
+    );
+
+    const hyperlaneTxPop =
+      await hypERC20Coll.populateTransaction.transferRemoteWithCalldata(
+        destChainID,
+        utils.addressToBytes32(activeAccount),
+        ethers.utils.parseEther(val),
+        callData
+      );
+
+    const hyperlaneTx: EthersTransactionRequest = {
+      ...hyperlaneTxPop,
+      from: activeAccount,
+    };
+
+    transactions.push(hyperlaneTx);
+
+    console.log('final transactions: %s', JSON.stringify(transactions));
+
+    await backgroundDispatch(
+      // transactionRequestのstateを変更する
+      sendTransactionsRequest({
+        transactionsRequest: transactions,
+        origin: '',
       })
     );
     console.log("res: ", res)
