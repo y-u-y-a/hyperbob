@@ -103,10 +103,7 @@ class AccountAPI extends AccountApiType {
       this.factory.address,
       this.factory.interface.encodeFunctionData('createAccount', [
         await this.owner.getAddress(),
-        this.zkBOBPool,
-        HyperBOBCollateral,
-        this.zkBobQueue,
-        this.index,
+        0,
       ]),
     ]);
   }

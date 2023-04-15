@@ -7,10 +7,18 @@ import '@nomiclabs/hardhat-etherscan';
 import './tasks/sendEth';
 import exconfigJson from './src/exconfig.json';
 import '@typechain/ethers-v5';
+import * as dotenv from 'dotenv';
+dotenv.config();
+const accounts = [process.env.PRIVATE_KEY as string];
 
 const networks: { [networkName: string]: HttpNetworkUserConfig } = {};
 exconfigJson.networks.map(({ name, provider }) => {
   networks[name] = {};
+  // if
+  if (!name.includes('Local')) {
+    networks[name].accounts = accounts;
+  }
+
   return (networks[name].url = provider);
 });
 
@@ -40,12 +48,6 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: 'src/pages/Account/account-api/typechain-types',
     target: 'ethers-v5',
-    externalArtifacts: [
-      './node_modules/@uniswap/v3-periphery/artifacts/contracts/interfaces/ISwapRouter.sol/ISwapRouter.json',
-      './node_modules/@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json',
-      './node_modules/@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json',
-      './node_modules/@openzeppelin/contracts/build/contracts/ERC20.json',
-    ],
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
