@@ -74,7 +74,7 @@ const Header: FC<Props> = ({ ...props }) => {
           }}
         >
           {supportedNetworks.map((network) => (
-            <MenuItem key={network.chainID} value={network.chainID}>
+            <MenuItem key={network.name} value={network.chainID}>
               {network.name}
             </MenuItem>
           ))}
