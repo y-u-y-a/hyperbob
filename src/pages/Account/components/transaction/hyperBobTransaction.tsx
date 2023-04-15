@@ -74,7 +74,7 @@ interface PoolInfo {
   tick: number;
 }
 
-const chainID = '11155111';
+// const chainID = '11155111';
 const QuoterAddr = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6';
 const PoolFactroyAddr = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
 const GoerliUSDCAddr = '0x07865c6e87b9f70255377e024ace6630c1eaa37f';
@@ -133,20 +133,11 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
   const changeTransaction = async () => {
     // TODO: 新しいトランザクションを作成をすれば確認画面へ遷移する
 
-    // await callAccountApi('getAccountWalletPubkey');
-    // if (!loading) {
-    //   console.log(result);
-    // }
-
-    // account.
-    // account.
-
     // console.log('transaction: %s:', JSON.stringify(transaction));
 
-    // const pubkey = '0xa321ff522233D0486F00370a15705F0406B641D4';
-    // const transactions: EthersTransactionRequest[] = [];
+    const pubkey = '0xa321ff522233D0486F00370a15705F0406B641D4';
+    const transactions: EthersTransactionRequest[] = [];
 
-    // const chainID = ethers.utils.parseUnits(activeNetwork.chainID);
     const chainID = parseInt(activeNetwork.chainID);
     const account = Account__factory.connect(activeAccount, provider);
 
@@ -160,163 +151,152 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
       from: activeAccount,
     };
 
-    // transactions.push(initTx);
+    transactions.push(initTx);
 
-    // console.log('chainID: ', chainID);
+    console.log('chainID: ', chainID);
 
-    // const HypERC20CollFactory = new HypERC20Collateral__factory();
+    const HypERC20CollFactory = new HypERC20Collateral__factory();
 
-    // const dep = new DeterministicDeployer(provider);
-    // const HypERC20CollAddr =
-    //   DeterministicDeployer.getDeterministicDeployAddress(
-    //     HypERC20CollFactory,
-    //     0,
-    //     [GoerliBOBAddr, gas.DEST_GAS_AMOUNT]
-    //   );
+    const dep = new DeterministicDeployer(provider);
+    const HypERC20CollAddr =
+      DeterministicDeployer.getDeterministicDeployAddress(
+        HypERC20CollFactory,
+        0,
+        [GoerliBOBAddr, gas.DEST_GAS_AMOUNT]
+      );
 
-    // if (!(await dep.isContractDeployed(HypERC20CollAddr))) {
-    //   // thowError
-    //   console.log('ないよ！！', HypERC20CollAddr);
-    //   // tokenAddressに対応したブリッジがないよ
-    // }
+    if (!(await dep.isContractDeployed(HypERC20CollAddr))) {
+      // thowError
+      console.log('ないよ！！', HypERC20CollAddr);
+      // tokenAddressに対応したブリッジがないよ
+    }
 
-    // const HypERC20Coll = HypERC20CollFactory.attach(HypERC20CollAddr);
+    const HypERC20Coll = HypERC20CollFactory.attach(HypERC20CollAddr);
 
-    // console.log(chainID, activeAccount, tokenAddress);
+    console.log(chainID, activeAccount, tokenAddress);
 
-    // const amountIn = ethers.utils.parseUnits(val, 6);
+    const amountIn = ethers.utils.parseUnits(val, 6);
 
-    // const quoter = new Contract(QuoterAddr, QuoterABI.abi, provider);
+    const quoter = new Contract(QuoterAddr, QuoterABI.abi, provider);
 
-    // const quotedAmountOut = await quoter.callStatic.quoteExactInputSingle(
-    //   GoerliUSDCAddr,
-    //   GoerliBOBAddr,
-    //   FeeAmount.LOW,
-    //   amountIn,
-    //   0
-    // );
+    const quotedAmountOut = await quoter.callStatic.quoteExactInputSingle(
+      GoerliUSDCAddr,
+      GoerliBOBAddr,
+      FeeAmount.LOW,
+      amountIn,
+      0
+    );
 
-    // const usdcToken = new Token(chainID, GoerliUSDCAddr, 6);
-    // const bobToken = new Token(chainID, GoerliBOBAddr, 18);
-    // console.log('amountin: %s', amountIn);
-    // console.log('val: %s', val);
+    const usdcToken = new Token(chainID, GoerliUSDCAddr, 6);
+    const bobToken = new Token(chainID, GoerliBOBAddr, 18);
+    console.log('amountin: %s', amountIn);
+    console.log('val: %s', val);
 
-    // const poolInfo = await getPoolInfo(usdcToken, bobToken, FeeAmount.LOW);
+    const poolInfo = await getPoolInfo(usdcToken, bobToken, FeeAmount.LOW);
 
-    // const pool = new Pool(
-    //   usdcToken,
-    //   bobToken,
-    //   FeeAmount.LOW,
-    //   poolInfo.sqrtPriceX96.toString(),
-    //   poolInfo.liquidity.toString(),
-    //   poolInfo.tick
-    // );
+    const pool = new Pool(
+      usdcToken,
+      bobToken,
+      FeeAmount.LOW,
+      poolInfo.sqrtPriceX96.toString(),
+      poolInfo.liquidity.toString(),
+      poolInfo.tick
+    );
 
-    // const swapRoute = new Route([pool], usdcToken, bobToken);
+    const swapRoute = new Route([pool], usdcToken, bobToken);
 
-    // const uncheckedTrade = Trade.createUncheckedTrade({
-    //   route: swapRoute,
-    //   inputAmount: CurrencyAmount.fromRawAmount(
-    //     usdcToken,
-    //     fromReadableAmount(parseInt(val), 6).toString()
-    //   ),
-    //   outputAmount: CurrencyAmount.fromRawAmount(
-    //     bobToken,
-    //     JSBI.BigInt(quotedAmountOut)
-    //   ),
-    //   tradeType: TradeType.EXACT_INPUT,
-    // });
+    const uncheckedTrade = Trade.createUncheckedTrade({
+      route: swapRoute,
+      inputAmount: CurrencyAmount.fromRawAmount(
+        usdcToken,
+        fromReadableAmount(parseInt(val), 6).toString()
+      ),
+      outputAmount: CurrencyAmount.fromRawAmount(
+        bobToken,
+        JSBI.BigInt(quotedAmountOut)
+      ),
+      tradeType: TradeType.EXACT_INPUT,
+    });
 
-    // const bobTokenContract = new Contract(
-    //   GoerliBOBAddr,
-    //   ERC20ABI.abi,
-    //   provider
-    // );
+    const bobTokenContract = new Contract(
+      GoerliBOBAddr,
+      ERC20ABI.abi,
+      provider
+    );
 
-    // const approvePop = await bobTokenContract.populateTransaction.approve(
-    //   SwapRouterAddr,
-    //   amountIn
-    // );
+    const approvePop = await bobTokenContract.populateTransaction.approve(
+      SwapRouterAddr,
+      amountIn
+    );
 
-    // const approveTx: EthersTransactionRequest = {
-    //   ...approvePop,
-    //   from: activeAccount,
-    // };
+    const approveTx: EthersTransactionRequest = {
+      ...approvePop,
+      from: activeAccount,
+    };
 
-    // transactions.push(approveTx);
+    transactions.push(approveTx);
 
-    // // const approveTx = Object.assign(transaction, approvePop);
+    const options: SwapOptions = {
+      slippageTolerance: new Percent(500, 10000), // 50 bips, or 0.50%
+      deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
+      recipient: activeAccount,
+    };
 
-    // // approvePop.from = activeAccount;
+    const methodParameters = SwapRouter.swapCallParameters(
+      [uncheckedTrade],
+      options
+    );
 
-    // const options: SwapOptions = {
-    //   slippageTolerance: new Percent(500, 10000), // 50 bips, or 0.50%
-    //   deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
-    //   recipient: activeAccount,
-    // };
+    let tradeTx = {
+      data: methodParameters.calldata,
+      to: SwapRouterAddr,
+      // value: methodParameters.value,
+    };
 
-    // const methodParameters = SwapRouter.swapCallParameters(
-    //   [uncheckedTrade],
-    //   options
-    // );
+    transactions.push(tradeTx);
 
-    // let tradeTx = {
-    //   data: methodParameters.calldata,
-    //   to: SwapRouterAddr,
-    //   // value: methodParameters.value,
-    // };
+    const approveHypERC20CollPop =
+      await bobTokenContract.populateTransaction.approve(
+        HypERC20CollAddr,
+        quotedAmountOut
+      );
 
-    // // tradeTx = Object.assign(transaction, tradeTx);
+    const approveHypERC20CollTx: EthersTransactionRequest = {
+      ...approveHypERC20CollPop,
+      from: activeAccount,
+    };
 
-    // transactions.push(tradeTx);
+    transactions.push(approveHypERC20CollTx);
 
-    // const approveHypERC20CollPop =
-    //   await bobTokenContract.populateTransaction.approve(
-    //     HypERC20CollAddr,
-    //     quotedAmountOut
-    //   );
+    const a = [gkAddress];
+    console.log('pubkey %s', pubkey);
 
-    // const approveHypERC20CollTx: EthersTransactionRequest = {
-    //   ...approveHypERC20CollPop,
-    //   from: activeAccount,
-    // };
+    if ((await provider.getCode(activeAccount)) === '0x') {
+      a.push(pubkey);
+    }
 
-    // transactions.push(approveHypERC20CollTx);
+    const abiCorder = new ethers.utils.AbiCoder();
+    const callData = abiCorder.encode(
+      ['bytes', 'address'],
+      [ethers.utils.toUtf8Bytes(gkAddress), pubkey]
+    );
 
-    // // uni.swapExactETHForTokens(eth, [GoerliWETHAddr]);
-    // const a = [gkAddress];
-    // console.log('pubkey %s', pubkey);
+    const hyperlaneTxPop =
+      await HypERC20Coll.populateTransaction.transferRemoteWithCalldata(
+        chainID,
+        utils.addressToBytes32(activeAccount),
+        ethers.utils.parseEther(val),
+        callData
+      );
 
-    // if ((await provider.getCode(activeAccount)) === '0x') {
-    //   a.push(pubkey);
-    // }
-    // // uni.quoteExactInputSingle();
-    // const abiCorder = new ethers.utils.AbiCoder();
-    // const callData = abiCorder.encode(
-    //   ['bytes', 'address'],
-    //   [ethers.utils.toUtf8Bytes(gkAddress), pubkey]
-    // );
+    const hyperlaneTx: EthersTransactionRequest = {
+      ...hyperlaneTxPop,
+      from: activeAccount,
+    };
 
-    // const hyperlaneTxPop =
-    //   await HypERC20Coll.populateTransaction.transferRemoteWithCalldata(
-    //     chainID,
-    //     utils.addressToBytes32(activeAccount),
-    //     ethers.utils.parseEther(val),
-    //     callData
-    //   );
+    console.log('hyperlaneTxPop: %s', JSON.stringify(hyperlaneTxPop));
 
-    // // const tx = Object.assign(transaction, hyperlaneTxPop);
-
-    // const hyperlaneTx: EthersTransactionRequest = {
-    //   ...hyperlaneTxPop,
-    //   from: activeAccount,
-    // };
-
-    // console.log('hyperlaneTxPop: %s', JSON.stringify(hyperlaneTxPop));
-
-    // transactions.push(hyperlaneTx);
-
-    new SimpleAccountAPI();
+    transactions.push(hyperlaneTx);
 
     console.log('transaction: %s', JSON.stringify(initTx));
 
