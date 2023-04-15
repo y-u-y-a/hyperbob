@@ -206,6 +206,27 @@ export const createUnsignedUserOp = createBackgroundAsyncThunk(
   }
 );
 
+export const createUnsignedUserOpBatch = createBackgroundAsyncThunk(
+  'transactions/createUnsignedUserOpBatch',
+  async (address: string, { dispatch, extra: { mainServiceManager } }) => {
+    const keyringService = mainServiceManager.getService(
+      KeyringService.name
+    ) as KeyringService;
+
+    const state = mainServiceManager.store.getState() as RootState;
+    const transactionsRequest = state.transactions.transactionsRequest;
+
+    if (transactionsRequest) {
+      const userOp = await keyringService.createUnsignedUserOpWithBatch(
+        address,
+        transactionsRequest
+      );
+      console.log('userOp: ', JSON.stringify(userOp));
+      dispatch(setUnsignedUserOperation(userOp));
+    }
+  }
+);
+
 export const rejectTransaction = createBackgroundAsyncThunk(
   'transactions/rejectTransaction',
   async (address: string, { dispatch, extra: { mainServiceManager } }) => {
