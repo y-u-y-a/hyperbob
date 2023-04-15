@@ -11,7 +11,7 @@ export const address = {
     BOB: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
     // hyperBOB
     accountImp: '0xeb3d8191d134B40fF093eB9FA56adEdE3389d6a6',
-    accountFactory: '0xa518f6ba96d609ba92bdb42e0a5226a5349d310e',
+    accountFactory: '0x95751b91b1d34537cd8a208d9b39093538d9d510',
     hypERCCollateral: '0xd06532148869ba2fdb1af29c79ba79002a833be0',
 
     // Uniswap
@@ -30,8 +30,8 @@ export const address = {
 
     // hyperBOB
     accountImp: '0x3e809ab2E61A6734Fea18E3F781a7c4b87c8291E',
-    accountFactory: '0xa518f6ba96d609ba92bdb42e0a5226a5349d310e',
-    hypERC: '0x0c98a817242eb4978613f60e4f4820840e7a5a12',
+    accountFactory: '0x95751b91b1d34537cd8a208d9b39093538d9d510',
+    hypERC: '0x0da95935ad5499a920cf179db3e5bf86d6c681e7',
   },
   common: {
     entryPoint: '0x0576a174D229E3cFA37253523E645A78A0C91B57',
