@@ -13,13 +13,13 @@ contract PriavteTransferStorage {
     IERC20 public immutable gBOB =
         IERC20(0x97a4ab97028466FE67F18A6cd67559BAABE391b8);
     IHypERC20Collateral public immutable hypBOBCollateral =
-        IHypERC20Collateral(0xd06532148869Ba2Fdb1aF29c79Ba79002a833bE0);
+        IHypERC20Collateral(0x1ECB226C20978B81f21041D71Eebc15Db8D2D7C3);
 
     // Sepolia(destination)
     IERC20 public immutable sBOB =
         IERC20(0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f);
     IHypERC20 public immutable hypBOB =
-        IHypERC20(0x0c98A817242eB4978613f60E4f4820840e7A5a12);
+        IHypERC20(0x79439b04066E15715A4e9D2c926EA02B01a00435);
     IZkBobDirectDeposits public immutable queue =
         IZkBobDirectDeposits(0xE3Dd183ffa70BcFC442A0B9991E682cA8A442Ade);
 }
