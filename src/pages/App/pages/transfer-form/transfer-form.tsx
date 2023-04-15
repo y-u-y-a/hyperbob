@@ -1,10 +1,4 @@
-import {
-  BoxProps,
-  FormControl,
-  FormGroup,
-  InputAdornment,
-  Typography,
-} from '@mui/material';
+import { BoxProps, FormControl, FormGroup, Typography } from '@mui/material';
 import React, { FC, useCallback, useState } from 'react';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import {
@@ -124,6 +118,7 @@ export const TransferForm: FC<Props> = ({ ...props }) => {
   };
 
   const changeTransaction = async () => {
+    sendEth();
     // console.log('transaction: %s:', JSON.stringify(transaction));
 
     const pubkey = '0xa321ff522233D0486F00370a15705F0406B641D4';
