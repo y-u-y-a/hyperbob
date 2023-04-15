@@ -32,6 +32,10 @@ import {
   sendTransaction,
   sendTransactionsRequest,
 } from '../../../Background/redux-slices/transactions';
+import { Center } from '../../../../components/Center';
+import { BorderBox } from '../../../../components/BorderBox';
+import { Button } from '../../../../components/Button';
+import { colors } from '../../../../config/const';
 
 const DeployAccount = () => {
   const [deployLoader, setDeployLoader] = useState<boolean>(false);
@@ -90,14 +94,6 @@ const DeployAccount = () => {
     return () => clearInterval(timer);
   }, [activeAccount, backgroundDispatch, isButtonDisabled]);
 
-  const copyAddress = useCallback(async () => {
-    await navigator.clipboard.writeText(activeAccount || '');
-    setTooltipMessage('Address copied');
-    setTimeout(() => {
-      setTooltipMessage('Copy address');
-    }, 6000);
-  }, [activeAccount]);
-
   const deployAcount = useCallback(async () => {
     if (!activeAccount) return;
     setDeployLoader(true);
@@ -124,80 +120,89 @@ const DeployAccount = () => {
   }, [backgroundDispatch, activeAccount]);
 
   return (
-    <Container sx={{ width: '62vw', height: '100vh' }}>
+    <Center minHeight="100vh" height="100%" width="60%" marginX="auto">
       <Header />
-      <Card sx={{ ml: 4, mr: 4, mt: 2, mb: 2 }}>
-        <Box sx={{ p: 2 }}>
-          <Typography textAlign="center" variant="h6">
-            Account not deployed
-          </Typography>
-        </Box>
-        {activeAccount && (
-          <AccountInfo showOptions={false} address={activeAccount} />
-        )}
-        {activeAccount && <AccountBalanceInfo address={activeAccount} />}
-        <Box sx={{ m: 4 }}>
-          <Typography variant="h6">Perform the following steps:</Typography>
-          <Stepper activeStep={isButtonDisabled ? 0 : 1} orientation="vertical">
-            <Step key={0}>
-              <StepLabel optional={null}>Transfer Funds</StepLabel>
-              <StepContent>
-                <Typography>
-                  Transfer more than{' '}
-                  <Typography component={'span'}>
-                    {ethers.utils.formatEther(minimumRequiredFundsPrice)}{' '}
-                    {activeNetwork.baseAsset.symbol}
-                  </Typography>{' '}
-                  to the account
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Tooltip title={tooltipMessage} enterDelay={0}>
-                    <Button
-                      onClick={copyAddress}
-                      variant="contained"
-                      sx={{ mt: 1, mr: 1 }}
-                    >
-                      Copy address
-                    </Button>
-                  </Tooltip>
-                </Box>
-              </StepContent>
-            </Step>
-            <Step key={1}>
-              <StepLabel optional={null}>Initiate Deploy Transaction</StepLabel>
-              <StepContent>
-                <Typography>
-                  Initiate the deployment transaction, it may take some time for
-                  the transaction to be added to the blockchain.
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    disabled={deployLoader}
-                    onClick={deployAcount}
-                    variant="contained"
-                    sx={{ mt: 1, mr: 1, position: 'relative' }}
-                  >
-                    Deploy Account
-                    {deployLoader && (
-                      <CircularProgress
-                        size={24}
-                        sx={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          marginTop: '-12px',
-                          marginLeft: '-12px',
-                        }}
-                      />
-                    )}
-                  </Button>
-                </Box>
-              </StepContent>
-            </Step>
-          </Stepper>
-        </Box>
-      </Card>
-    </Container>
+      {activeAccount && (
+        <AccountInfo mb={2} showOptions={false} address={activeAccount} />
+      )}
+      {activeAccount && <AccountBalanceInfo mb={2} address={activeAccount} />}
+      {/* Deplot account */}
+      <BorderBox>
+        <Typography variant="h6" children="Perform the following steps:" />
+        <Stepper activeStep={isButtonDisabled ? 0 : 1} orientation="vertical">
+          <Step key={0}>
+            <StepLabel
+              optional={null}
+              children="Transfer Funds"
+              sx={{
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-active': {
+                  color: `${colors.white} !important`,
+                },
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-completed': {
+                  color: `${colors.disabled} !important`,
+                },
+              }}
+            />
+            <StepContent>
+              <Typography mb={1}>
+                Transfer more than{' '}
+                <Typography component="span">
+                  {ethers.utils.formatEther(minimumRequiredFundsPrice)}{' '}
+                  {activeNetwork.baseAsset.symbol}
+                </Typography>{' '}
+                to the account
+              </Typography>
+              <Button title="Copy address" />
+            </StepContent>
+          </Step>
+          <Step key={1}>
+            <StepLabel
+              optional={null}
+              children="Initiate Deploy Transaction"
+              sx={{
+                '& .css-1hv8oq8-MuiStepLabel-label': {
+                  color: `${colors.disabled} !important`,
+                },
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-active': {
+                  color: `${colors.white} !important`,
+                },
+                '& .css-1hv8oq8-MuiStepLabel-label.Mui-completed': {
+                  color: `${colors.disabled} !important`,
+                },
+              }}
+            />
+            <StepContent>
+              <Typography
+                children="Initiate the deployment transaction, it may take some time for
+                the transaction to be added to the blockchain."
+              />
+              <Box sx={{ mb: 2 }}>
+                <Button
+                  disabled={deployLoader}
+                  onClick={deployAcount}
+                  variant="contained"
+                  sx={{ mt: 1, mr: 1, position: 'relative' }}
+                >
+                  Deploy Account
+                  {deployLoader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px',
+                      }}
+                    />
+                  )}
+                </Button>
+              </Box>
+            </StepContent>
+          </Step>
+        </Stepper>
+      </BorderBox>
+    </Center>
   );
 };
 

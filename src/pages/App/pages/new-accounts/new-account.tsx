@@ -1,19 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Box,
-  Button,
-  CardActions,
-  CardContent,
+  BoxProps,
   CircularProgress,
-  Container,
   FormControl,
   FormGroup,
-  InputLabel,
-  Link,
-  OutlinedInput,
-  Stack,
   Typography,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import EastIcon from '@mui/icons-material/East';
 import {
   ActiveAccountImplementation,
   AccountImplementations,
@@ -25,69 +19,63 @@ import { EVMNetwork } from '../../../Background/types/network';
 import { useNavigate } from 'react-router-dom';
 import { getAccountAdded } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { resetAccountAdded } from '../../../Background/redux-slices/account';
-import { FlashOffOutlined } from '@mui/icons-material';
+import { HeadTitle } from '../../../../components/HeadTitle';
+import { Button } from '../../../../components/Button';
+import { BorderBox } from '../../../../components/BorderBox';
+import { Center } from '../../../../components/Center';
+import { Row } from '../../../../components/Row';
+import { FormInput } from '../../../../components/FormInput';
+import { colors } from '../../../../config/const';
+
+type TakeNameComponentProps = BoxProps & {
+  name: string;
+  setName: (name: string) => void;
+  showLoader: boolean;
+  nextStage: () => void;
+};
 
 const TakeNameComponent = ({
   name,
   setName,
   showLoader,
   nextStage,
-}: {
-  name: string;
-  setName: (name: string) => void;
-  showLoader: boolean;
-  nextStage: () => void;
-}) => {
+}: TakeNameComponentProps) => {
   return (
     <>
-      <CardContent>
-        <Typography textAlign="center" variant="h3" gutterBottom>
-          New account
-        </Typography>
-        <Typography textAlign="center" variant="body1" color="text.secondary">
-          Give a name to your account so that you can recoganise it easily.
-        </Typography>
-        <FormGroup sx={{ p: 2, pt: 4 }}>
-          <FormControl sx={{ m: 1 }} variant="outlined">
-            <InputLabel htmlFor="name">Name</InputLabel>
-            <OutlinedInput
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoFocus
-              id="name"
-              type="text"
-              label="Name"
+      <HeadTitle title="Create Account" />
+      <Typography marginBottom={4} width="100%" variant="body1" color="white">
+        Give a name to your account so that you can recoganise it easily.
+      </Typography>
+      <FormGroup sx={{ width: '100%' }}>
+        <FormControl sx={{ m: 1 }}>
+          {/* <InputLabel htmlFor="name">Account Name</InputLabel> */}
+          <FormInput
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Account Name"
+            // id="name"
+            // label="Account Name"
+          />
+        </FormControl>
+      </FormGroup>
+      <Row textAlign="right">
+        <Button
+          sx={{ marginLeft: 'auto', marginTop: 8 }}
+          title="Create"
+          onClick={nextStage}
+          disabled={name.length === 0 || showLoader}
+          icon={
+            <EastIcon
+              sx={{
+                color:
+                  name.length === 0 || showLoader
+                    ? colors.disabled
+                    : colors.white,
+              }}
             />
-          </FormControl>
-        </FormGroup>
-      </CardContent>
-      <CardActions sx={{ width: '100%', pl: 2, pr: 2, pt: 0 }}>
-        <Stack spacing={2} sx={{ width: '100%', pl: 2, pr: 2 }}>
-          <Box sx={{ position: 'relative' }}>
-            <Button
-              sx={{ width: '100%' }}
-              disabled={name.length === 0 || showLoader}
-              size="large"
-              variant="contained"
-              onClick={nextStage}
-            >
-              Set name
-            </Button>
-            {showLoader && (
-              <CircularProgress
-                size={24}
-                sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  marginTop: '-12px',
-                  marginLeft: '-12px',
-                }}
-              />
-            )}
-          </Box>
-        </Stack>
-      </CardActions>
+          }
+        />
+      </Row>
     </>
   );
 };
@@ -143,58 +131,36 @@ const NewAccount = () => {
   }, [stage, setStage, onOnboardingComplete]);
 
   return (
-    <Container sx={{ height: '100vh' }}>
-      <Stack
-        spacing={2}
-        sx={{ height: '100%' }}
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          sx={{
-            width: 600,
-            minHeight: 300,
-            p: 2,
-            border: '1px solid #d6d9dc',
-            background: 'white',
-            borderRadius: 5,
-          }}
-        >
-          {showLoader && (
-            <CircularProgress
-              size={24}
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                marginTop: '-12px',
-                marginLeft: '-12px',
-              }}
-            />
-          )}
-          {!showLoader && stage === 'name' && (
-            <TakeNameComponent
-              name={name}
-              setName={setName}
-              showLoader={showLoader}
-              nextStage={nextStage}
-            />
-          )}
-          {!showLoader &&
-            stage === 'account-onboarding' &&
-            AccountOnboarding && (
-              <AccountOnboarding
-                accountName={name}
-                onOnboardingComplete={onOnboardingComplete}
-              />
-            )}
-        </Box>
-      </Stack>
-    </Container>
+    <Center minHeight="100vh" height="100%" width="60%" marginX="auto">
+      <BorderBox>
+        {showLoader && (
+          <CircularProgress
+            size={24}
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+        )}
+        {!showLoader && stage === 'name' && (
+          <TakeNameComponent
+            name={name}
+            setName={setName}
+            showLoader={showLoader}
+            nextStage={nextStage}
+          />
+        )}
+        {!showLoader && stage === 'account-onboarding' && AccountOnboarding && (
+          <AccountOnboarding
+            accountName={name}
+            onOnboardingComplete={onOnboardingComplete}
+          />
+        )}
+      </BorderBox>
+    </Center>
   );
 };
 

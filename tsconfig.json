@@ -16,7 +16,7 @@
     "jsx": "react",
     "typeRoots": ["./src/types"]
   },
-  "include": ["src", "deploy", "scripts"],
+  "include": ["src", "deploy", "scripts", "tasks"],
   "exclude": ["build", "node_modules", "dist"],
   "files": ["./hardhat.config.ts"]
 }
