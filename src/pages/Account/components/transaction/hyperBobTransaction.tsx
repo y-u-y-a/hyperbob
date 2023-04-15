@@ -11,7 +11,7 @@ import {
   sendTransactionsRequest,
   setModifyTransactionsRequest
 } from '../../../Background/redux-slices/transactions';
-import { Contract, ContractFactory, Wallet, ethers } from 'ethers';
+import { BigNumber, Contract, ContractFactory, Wallet, ethers } from 'ethers';
 import {
   DeterministicDeployer,
   SimpleAccountAPI,
@@ -56,6 +56,7 @@ import {
   computePoolAddress,
   Trade,
 } from '@uniswap/v3-sdk';
+import SwapRouterABI from '@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json';
 
 import JSBI from 'jsbi';
 import {
@@ -82,6 +83,7 @@ const PoolFactroyAddr = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
 const GoerliUSDCAddr = '0x07865c6e87b9f70255377e024ace6630c1eaa37f';
 const GoerliBOBAddr = '0x97a4ab97028466FE67F18A6cd67559BAABE391b8';
 const SwapRouterAddr = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
+const HypERC20CollAddr = '0x1ECB226C20978B81f21041D71Eebc15Db8D2D7C3';
 // const HypERC20CollAddr = "0xd06532148869ba2fdb1af29c79ba79002a833be0"
 // NOTE: This is Costomize component
 export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
@@ -102,7 +104,6 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
     const pubkey = '0xa321ff522233D0486F00370a15705F0406B641D4';
     // const transactions: EthersTransactionRequest[] = [];
 
-    const chainID = parseInt(activeNetwork.chainID);
     const account = Account__factory.connect(activeAccount, provider);
 
     const init: boolean = false;
