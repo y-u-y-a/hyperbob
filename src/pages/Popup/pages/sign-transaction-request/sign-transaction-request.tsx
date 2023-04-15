@@ -169,7 +169,7 @@ const SignTransactionRequest = () => {
         await backgroundDispatch(
           sendTransaction({
             address: activeAccount,
-            context: _context || context,
+            context: context,
           })
         );
       window.close();
@@ -188,7 +188,6 @@ const SignTransactionRequest = () => {
       if (activeAccount) {
         // bundlerに送るユーザーオペレーションを作成している
         backgroundDispatch(createUnsignedUserOp(activeAccount));
-        setContext(context);
         if (Config.showTransactionConfirmationScreen === false) {
           onSend(context);
         }
