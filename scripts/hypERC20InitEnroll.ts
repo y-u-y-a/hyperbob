@@ -24,7 +24,8 @@ async function main() {
     utils.addressToBytes32(address.goerli.hypERCCollateral)
   );
 
-  console.log('tx hash for enrollRemoteRouter(): ', enrollTx);
+  const recepit2 = await enrollTx.wait()
+  console.log('tx hash for enrollRemoteRouter(): ', recepit2.transactionHash);
 }
 
 main().catch((error) => {

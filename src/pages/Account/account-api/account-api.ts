@@ -42,11 +42,7 @@ class AccountAPI extends AccountApiType {
   constructor(params: AccountApiParamsType<{}>) {
     super(params);
 
-    this.factoryAddress = DeterministicDeployer.getDeterministicDeployAddress(
-      new AccountFactory__factory(),
-      0,
-      [this.entryPointAddress]
-    );
+    this.factoryAddress = "0xB7B3e2d95B110988De1208547f40464B78Ba77dA"
 
     this.owner = new ethers.Wallet(
       '0xe6acd6693c0d5e4753e274fafdf43ce0b0b5d31524a6dee80f09175adef62677'

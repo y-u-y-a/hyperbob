@@ -18,7 +18,6 @@ exconfigJson.networks.map(({ name, provider }) => {
   if (!name.includes('Local')) {
     networks[name].accounts = accounts;
   }
-
   return (networks[name].url = provider);
 });
 

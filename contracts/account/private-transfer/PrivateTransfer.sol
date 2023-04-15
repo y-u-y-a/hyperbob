@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity >=0.8.0;
 
-import {ERC777} from "./ERC777.sol";
-import {TypeCasts} from "@hyperlane-xyz/core/contracts/libs/TypeCasts.sol";
-import "hardhat/console.sol";
-import "./PriavteTransferStorage.sol";
+import {ERC777} from './ERC777.sol';
+import {TypeCasts} from '@hyperlane-xyz/core/contracts/libs/TypeCasts.sol';
+import 'hardhat/console.sol';
+import './PriavteTransferStorage.sol';
 
 abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
     using TypeCasts for bytes32;
@@ -18,10 +18,10 @@ abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
         bytes calldata operatorData
     ) external override {
         // msg.sender must be hypBOB if it's ERC777 token transfer from bridge(hypERC20 itself)
-        require(msg.sender == address(hypBOB), "INVALID_CALLER");
+        require(msg.sender == address(hypBOB), 'INVALID_CALLER');
 
         // make sure that BOB is sent from the same address (AA) on L1.
-        require(from == address(this), "INVALID_TOKEN_SENDER");
+        require(from == address(this), 'INVALID_TOKEN_SENDER');
 
         // carry out private transfer
         _executePrivateTransfer(_userData, amount);
@@ -72,7 +72,7 @@ abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
             amount * 10 ** 18,
             _zkAddress
         );
-        console.log("Deposit ID: %s", depositId);
+        console.log('Deposit ID: %s', depositId);
 
         // Option B, through ERC677 token interface
         // bob.transferAndCall(address(queue), 100 ether, abi.encode(fallbackReceiver, zkAddress));
@@ -102,23 +102,50 @@ abstract contract PrivateTransfer is ERC777, PriavteTransferStorage {
     function bridgBOB(
         uint32 _destination,
         bytes32 _recipient,
-        uint256 _amount,
-        bytes memory _zkAddress
+        uint256 _amount, // usdc amount
+        address _token, // usdc
+        bytes memory _data,
+        uint _interchainGas // 0.02
     ) public {
+        uint amount = _swapToBOB(_token, _amount);
         // make sure that caller is this AA wallet
+        require(msg.sender == address(this), 'INVALID_CALLER');
         require(
             TypeCasts.bytes32ToAddress(_recipient) != address(0),
-            "INVALID_ADDRESS"
+            'INVALID_ADDRESS'
         );
-        require(_amount != 0, "INVALID_AMOUNT");
-        require(msg.sender == address(this), "INVALID_CALLER");
+        require(_amount != 0, 'INVALID_AMOUNT');
 
-        gBOB.approve(address(hypBOBCollateral), _amount);
-        hypBOBCollateral.transferRemoteWithCalldata(
+        gBOB.approve(address(hypBOBCollateral), amount);
+
+        // _interchainGas = 5000000000 * 1500000; // gasPrice * ( gas_value * 1.5 ) = 0.0075
+        hypBOBCollateral.transferRemoteWithCalldata{value: _interchainGas}(
             _destination,
             _recipient,
-            _amount,
-            _zkAddress
+            amount,
+            _data
         );
+    }
+
+    function _swapToBOB(address _token, uint _amount) internal returns (uint) {
+        IERC20(_token).approve(address(uniRouter), _amount);
+        address[] memory path = new address[](2);
+        path[0] = _token;
+        path[1] = address(gBOB);
+
+        uint256[] memory expectdAmountOut = uniRouter.getAmountsOut(
+            _amount,
+            path
+        );
+
+        uint[] memory returnAmounts = uniRouter.swapExactTokensForTokens(
+            _amount,
+            expectdAmountOut[1],
+            path,
+            address(this),
+            type(uint256).max
+        );
+
+        return returnAmounts[1];
     }
 }
