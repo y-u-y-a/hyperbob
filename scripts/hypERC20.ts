@@ -33,19 +33,9 @@ async function main() {
     gas.GAS_AMOUNT
   );
 
-  const hyperBOB = factory.attach(hyperBOBFactory.address);
+  // const hyperBOB = factory.attach(hyperBOBFactory.address);
 
   console.log('hyperBOBAddress: ', hyperBOBFactory.address);
-
-  const initTx = await hyperBOB.initialize(
-    address.sepolia.accountFactory,
-    address.sepolia.mailbox,
-    address.sepolia.defaultIsmInterchainGasPaymaster,
-    { gasLimit: gas.GAS_LIMIT }
-  );
-
-  const recepit1 = await initTx.wait();
-  console.log('tx hash for initialize(): ', recepit1.transactionHash);
 }
 
 main().catch((error) => {
