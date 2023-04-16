@@ -64,7 +64,7 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
   const [val, setVal] = useState('');
   const activeNetwork = useBackgroundSelector(getActiveNetwork);
   const activeAccount = useBackgroundSelector(getActiveAccount);
-  const provider = new ethers.providers.JsonRpcProvider(activeNetwork.provider);
+  const prov = new ethers.providers.JsonRpcProvider(activeNetwork.provider);
 
   const changeTransaction = async () => {
     // TODO: 新しいトランザクションを作成をすれば確認画面へ遷移する
@@ -73,60 +73,43 @@ export const HyperBobTransaction: FC<Props> = ({ transaction, onComplete }) => {
 
     const pubkey = '0xa321ff522233D0486F00370a15705F0406B641D4';
     // const transactions: EthersTransactionRequest[] = [];
+    console.log('pubkey %s', pubkey);
 
-    const account = Account__factory.connect(activeAccount, provider);
-
-    const init: boolean = true;
-
+    const account = Account__factory.connect(activeAccount, prov);
     const amountIn = ethers.utils.parseUnits(val, 6);
 
-    let tx: EthersTransactionRequest;
-    if (init) {
-      const initPopTx =
-      await account.populateTransaction.initializePrivateTransfer();
+    const types = ['bytes'];
+    const values: any[] = [ethers.utils.toUtf8Bytes(gkAddress)];
 
-       console.log('initPopTx: %s', initPopTx);
-
-       tx = {
-      ...initPopTx,
-      from: activeAccount,
-    };
-
-    } else {
-      const a = [gkAddress];
-      console.log('pubkey %s', pubkey);
-  
-        a.push(pubkey);
-  
-      const abiCorder = new ethers.utils.AbiCoder();
-      const callData = abiCorder.encode(
-        ['bytes', 'address'],
-        [ethers.utils.toUtf8Bytes(gkAddress), pubkey]
-      );
-  
-      console.log("amountIn: ", amountIn)
-  
-      const PopTx =
-      await account.populateTransaction.bridgBOB(
-        destChainID,
-        utils.addressToBytes32(activeAccount as string),
-        amountIn,
-        GoerliUSDCAddr,
-        callData,
-        ethers.utils.parseEther("0.022")
-      );
-  
-    console.log('PopTx: %s', PopTx);
-  
-     tx = {
-       ...PopTx,
-       from: activeAccount,
-       gasLimit: gas.GAS_LIMIT
-      };
+    if ((await prov.getCode(activeAccount)) === '0x') {
+      types.push('address');
+      values.push(pubkey);
     }
 
+    const abiCorder = new ethers.utils.AbiCoder();
+    const callData = abiCorder.encode(types, values);
+
+    console.log('amountIn: ', amountIn);
+
+    const PopTx = await account.populateTransaction.bridgBOB(
+      destChainID,
+      utils.addressToBytes32(activeAccount as string),
+      amountIn,
+      GoerliUSDCAddr,
+      callData,
+      ethers.utils.parseEther('0.022')
+    );
+
+    console.log('PopTx: %s', PopTx);
+
+    const tx = {
+      ...PopTx,
+      from: activeAccount,
+      gasLimit: gas.GAS_LIMIT,
+    };
+
     const res = await backgroundDispatch(
-      await sendTransactionRequest({
+      sendTransactionRequest({
         transactionRequest: tx,
         origin: ''
       })

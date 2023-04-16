@@ -1,8 +1,10 @@
 .PHONY: deploy
 
-deploy:
+deploy-prepare:
 	yarn hardhat run scripts/hypERC20Collateral.ts --network Goerli
 	yarn hardhat run scripts/hypERC20.ts --network Sepolia
+
+deploy:
 	yarn hardhat run scripts/accountFactory.ts --network Goerli
 	yarn hardhat run scripts/accountFactory.ts --network Sepolia
 	yarn hardhat run scripts/hypERC20InitEnroll.ts --network Sepolia
