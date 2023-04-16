@@ -2,6 +2,8 @@
 
 <img src="src/assets/img/icon-128.png" width="64"/>
 
+https://user-images.githubusercontent.com/4685781/232259959-147e40e0-1e03-4e59-9c3a-40d94d86de78.mp4
+
 ## Project Description
 
 The advent of the Account Abstraction and its first implementation, ERC4337, could unlock the full potential of Ethereum by bringing huge UX improvements to Ethereum L1 as it grants ethereum accounts much more flexibility and security. Since we believe that access to a privacy-preserving solution can be highly eased with AA, our team decided to build HyperBOB.
