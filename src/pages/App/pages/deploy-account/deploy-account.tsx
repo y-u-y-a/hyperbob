@@ -113,7 +113,7 @@ const DeployAccount = () => {
         ],
       });
 
-      console.log(accounts, txHash);
+      console.log('txHash: ', JSON.stringify(txHash));
     }
 
     // await backgroundDispatch(sendTransaction(activeAccount));

@@ -160,10 +160,11 @@ class AccountAPI extends AccountApiType {
     userOp: UserOperationStruct,
     context: any
   ): Promise<UserOperationStruct> => {
-    console.log('came signUserOpWithContext');
+    const userOpHash = await this.getUserOpHash(userOp);
+    console.log('userOpHash: ', userOpHash);
     return {
       ...userOp,
-      signature: await this.signUserOpHash(await this.getUserOpHash(userOp)),
+      signature: await this.signUserOpHash(userOpHash),
     };
   };
 
