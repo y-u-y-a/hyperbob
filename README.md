@@ -6,9 +6,7 @@ https://user-images.githubusercontent.com/4685781/232259959-147e40e0-1e03-4e59-9
 
 ## Project Description
 
-The advent of the Account Abstraction and its first implementation, ERC4337, could unlock the full potential of Ethereum by bringing huge UX improvements to Ethereum L1 as it grants ethereum accounts much more flexibility and security. Since we believe that access to a privacy-preserving solution can be highly eased with AA, our team decided to build HyperBOB.
-
-HyperBOB is an ERC4337-compliant wallet that elegantly implements an anonymous transfer feature on Ethereum L1, where wallet users are able to transfer any stablecoin to another address without exposing the on-chain connection of each address. This is made possible by the combination of cutting-edge technologies, such as HyperLane’s customizable interchain bridge and zkBOB’s zero-knowledge solution for private token transfer.
+HyperBOB is an [ERC4337](https://eips.ethereum.org/EIPS/eip-4337) wallet that implements an anonymous transfer feature on Ethereum L1, where wallet users are able to transfer any stablecoin to another address without exposing the on-chain connection of each address. This is made possible by the combination of cutting-edge technologies, such as [HyperLane](https://www.hyperlane.xyz/)’s customizable interchain bridge and [zkBOB](https://dapp.expert/dapp/)’s zero-knowledge solution for private token transfer.
 
 ## How it's Made
 
@@ -38,3 +36,5 @@ And most importantly, all of the complex executions described above is done by s
    3. Click on `Load unpacked extension`
    4. Select the `build` folder.
 8. Happy hacking.
+
+[zkBOB on Sepolia testnet](https://staging--zkbob.netlify.app/deposit)
