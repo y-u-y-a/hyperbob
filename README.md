@@ -1,5 +1,7 @@
 # HyperBOB
 
+[This is the project built at the ETHGlobal Tokyo](https://ethglobal.com/showcase/hyperbob-fz6rz)  
+
 <img src="src/assets/img/icon-128.png" width="64"/>
 
 https://user-images.githubusercontent.com/4685781/232259959-147e40e0-1e03-4e59-9c3a-40d94d86de78.mp4
